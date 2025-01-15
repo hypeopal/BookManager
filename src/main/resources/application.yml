@@ -4,3 +4,6 @@ spring:
     username: postgres
     password: dj125484
     url: jdbc:postgresql://localhost:5432/book_manage
+
+server:
+  port: 8088
