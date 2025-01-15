@@ -1,7 +1,11 @@
 package com.example.bookmanager.Service;
 
-import com.example.bookmanager.Entity.Book;
+import com.example.bookmanager.DTO.BookDTO;
+import com.example.bookmanager.Entity.BookInformation;
+
+import java.util.List;
 
 public interface BookService {
-    Book findByTitle(String title);
+    BookInformation findByTitle(String title);
+    List<BookDTO> findAllBooks();
 }
