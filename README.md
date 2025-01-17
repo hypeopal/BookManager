@@ -16,10 +16,10 @@
    
    contentType: application/json
    
-   | Para name | Type   | Necesstity | Comment                                   |
-   |:---------:|:------:|:----------:|:-----------------------------------------:|
-   | username  | string | yes        | contains num, char, symbol                |
-   | password  | string | yes        | must contains char and num, above 6 chars |
+   | Para name | Type   | Necessity | Comment                                |
+   |:---------:|--------|:---------:|----------------------------------------|
+   | username  | string |    yes    | contains num, char, symbol, 5-15 chars |
+   | password  | string |    yes    | must contains char and num, 6-20 chars |
    
    ```json
    {

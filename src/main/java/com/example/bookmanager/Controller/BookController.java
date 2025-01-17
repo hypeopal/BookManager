@@ -20,8 +20,6 @@ public class BookController {
 
     /*
     * Get list of all books
-    * /api/books
-    * method:get
     * */
     @GetMapping
     public Result<List<BookDTO>> getAllBooks() {
@@ -36,7 +34,6 @@ public class BookController {
     /*
     * Search book by title
     * /api/books/search
-    * method:get
     * */
     @GetMapping("/search")
     public Result<BookInformation> findByTitle(String title) {
