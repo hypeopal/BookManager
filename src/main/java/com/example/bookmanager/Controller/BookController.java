@@ -4,8 +4,7 @@ import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.BookRequestDTO;
 import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.bookmanager.Utils.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +24,13 @@ public class BookController {
     * method:get
     * */
     @GetMapping
-    public List<BookDTO> getAllBooks() {
-        return bookService.findAllBooks();
+    public Result<List<BookDTO>> getAllBooks() {
+        try {
+            List<BookDTO> list = bookService.findAllBooks();
+            return Result.success(list, "Get list of books successfully");
+        } catch (Exception e) {
+            return Result.error(2, "Failed to get list of books: " + e.getMessage());
+        }
     }
 
     /*
@@ -35,8 +39,14 @@ public class BookController {
     * method:get
     * */
     @GetMapping("/search")
-    public BookInformation findByTitle(String title) {
-        return bookService.findByTitle(title);
+    public Result<BookInformation> findByTitle(String title) {
+        try {
+            BookInformation bookInformation = bookService.findByTitle(title);
+            return Result.success(bookInformation, "Get book by title successfully");
+        } catch (Exception e) {
+            return Result.error(3, "Failed to get book by title: " + e.getMessage());
+        }
+
     }
 
     /*
@@ -45,8 +55,12 @@ public class BookController {
     * method:post
     * */
     @PostMapping
-    public ResponseEntity<String> addBooks(@RequestBody BookRequestDTO bookRequestDTO) {
-        bookService.addBooks(bookRequestDTO);
-        return ResponseEntity.ok("Book added successfully");
+    public Result<String> addBooks(@RequestBody BookRequestDTO bookRequestDTO) {
+        try {
+            bookService.addBooks(bookRequestDTO);
+            return Result.success(null, "Books added successfully");
+        } catch (Exception e) {
+            return Result.error(1, "Failed to add books: " + e.getMessage());
+        }
     }
 }
