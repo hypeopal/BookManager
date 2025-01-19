@@ -40,11 +40,8 @@ public class UserController {
         if (userService.isUsernameExists(userRequest.getUsername())) {
             if (userService.validateLogin(userRequest.getUsername(), userRequest.getPassword())) {
                 return Result.success(null, "Login successfully");
-            } else {
-                return Result.error(5, "Invalid username or password");
             }
-        } else {
-            return Result.error(6, "User not found");
         }
+        return Result.error(5, "Invalid username or password");
     }
 }

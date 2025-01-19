@@ -5,6 +5,8 @@ import com.example.bookmanager.DTO.BookRequestDTO;
 import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Service.BookService;
 import com.example.bookmanager.Utils.Result;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,7 +54,10 @@ public class BookController {
     * method:post
     * */
     @PostMapping
-    public Result<String> addBooks(@RequestBody BookRequestDTO bookRequestDTO) {
+    public Result<String> addBooks(@Valid @RequestBody BookRequestDTO bookRequestDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
         try {
             bookService.addBooks(bookRequestDTO);
             return Result.success(null, "Books added successfully");
