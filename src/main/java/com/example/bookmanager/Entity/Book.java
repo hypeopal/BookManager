@@ -1,5 +1,6 @@
 package com.example.bookmanager.Entity;
 
+import com.example.bookmanager.Type.BookStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class Book {
     private Long id;
     private String isbn;
+    private BookStatus status = BookStatus.AVAILABLE;
 }

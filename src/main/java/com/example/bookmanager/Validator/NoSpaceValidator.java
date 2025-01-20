@@ -1,4 +1,4 @@
-package com.example.bookmanager.Utils;
+package com.example.bookmanager.Validator;
 
 import com.example.bookmanager.Annotation.NoSpace;
 import jakarta.validation.ConstraintValidator;

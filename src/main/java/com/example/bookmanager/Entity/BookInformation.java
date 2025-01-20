@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookInformation {
     private String isbn;
-    private String author;
     private String title;
+    private String author;
     private String publisher;
 }

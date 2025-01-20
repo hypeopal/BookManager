@@ -13,7 +13,10 @@ public interface BookInformationMapper {
     @Select("select * from book_information where title like '%${title}%'")
     BookInformation findByTitle(String title);
 
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher " +
+    @Select("select * from book_information where isbn = #{isbn}")
+    BookInformation findByIsbn(String isbn);
+
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status " +
             "from books b " +
             "join book_information bi on b.isbn = bi.isbn")
     List<BookDTO> findAllBooks();

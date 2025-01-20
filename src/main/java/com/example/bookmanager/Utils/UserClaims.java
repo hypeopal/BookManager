@@ -10,10 +10,9 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserClaims {
-    private String userId;
     private String username;
 
     Map<String, Object> toMap() {
-        return Map.of("userId", userId, "userName", username);
+        return Map.of("userName", username);
     }
 }

@@ -26,16 +26,18 @@ public class JWTUtil {
                 .compact();
     }
 
-    public static UserClaims parseToken(String token) throws ExpiredJwtException, JwtException {
+    public static UserClaims parseToken(String token) throws JwtException {
+        token = token.replace("Bearer ", "");
         Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        return new UserClaims((String) claims.get("userId"), (String) claims.get("userName"));
+        return new UserClaims((String) claims.get("userName"));
     }
 
     public static boolean isExpired(String token) {
+        token = token.replace("Bearer ", "");
         try {
             Claims claims = Jwts.parser()
                     .verifyWith(key)
@@ -44,7 +46,7 @@ public class JWTUtil {
                     .getPayload();
             Date expiration = claims.getExpiration();
             return expiration.before(new Date());
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {
             return true;
         }
     }

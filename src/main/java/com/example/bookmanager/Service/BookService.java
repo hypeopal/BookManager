@@ -1,7 +1,8 @@
 package com.example.bookmanager.Service;
 
 import com.example.bookmanager.DTO.BookDTO;
-import com.example.bookmanager.DTO.BookRequestDTO;
+import com.example.bookmanager.DTO.AddBookRequest;
+import com.example.bookmanager.DTO.BookInfoRequest;
 import com.example.bookmanager.Entity.BookInformation;
 
 import java.util.List;
@@ -9,5 +10,6 @@ import java.util.List;
 public interface BookService {
     BookInformation findByTitle(String title);
     List<BookDTO> findAllBooks();
-    void addBooks(BookRequestDTO bookRequestDTO);
+    void addBooks(AddBookRequest addBookRequest);
+    void addBookInfo(BookInfoRequest bookInfoRequest);
 }
