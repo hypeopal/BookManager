@@ -5,6 +5,7 @@ import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.UserService;
 import com.example.bookmanager.Utils.JWTUtil;
 import com.example.bookmanager.Utils.Result;
+import com.example.bookmanager.Utils.ThreadLocalUtil;
 import com.example.bookmanager.Utils.UserClaims;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     /*
-    * sign up a user
+    * sign up an account
     * */
     @PostMapping("/signup")
     public Result<String> signup(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
@@ -32,7 +33,7 @@ public class UserController {
         if (userService.isUsernameExists(userRequest.getUsername())) {
             throw new BusinessException(4, "Username already exists");
         }
-        // not exist
+        // not exists
         userService.signup(userRequest.getUsername(), userRequest.getPassword());
         return Result.success(null, "Signup successfully");
     }
@@ -50,5 +51,20 @@ public class UserController {
             }
         }
         throw new BusinessException(5, "Invalid username or password");
+    }
+
+    @GetMapping("/info")
+    public Result<String> getUserInfo() {
+        UserClaims claims = ThreadLocalUtil.get();
+        ThreadLocalUtil.remove();
+        return Result.success(claims.getUsername() + " info");
+    }
+
+    @DeleteMapping
+    public Result<String> deleteUser() {
+        UserClaims claims = ThreadLocalUtil.get();
+        userService.deleteUser(claims.getUsername());
+        ThreadLocalUtil.remove();
+        return Result.success(null, "Delete user successfully");
     }
 }

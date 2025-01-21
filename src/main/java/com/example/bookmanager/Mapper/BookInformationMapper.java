@@ -2,6 +2,7 @@ package com.example.bookmanager.Mapper;
 
 import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.Entity.BookInformation;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -26,4 +27,7 @@ public interface BookInformationMapper {
 
     @Select("select count(*) from book_information where isbn = #{isbn}")
     int existsByIsbn(String isbn);
+
+    @Delete("delete from book_information where isbn = #{isbn}")
+    void deleteByIsbn(String isbn);
 }

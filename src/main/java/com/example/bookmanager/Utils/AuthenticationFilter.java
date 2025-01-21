@@ -1,6 +1,7 @@
 package com.example.bookmanager.Utils;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +12,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 public class AuthenticationFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
@@ -23,12 +24,12 @@ public class AuthenticationFilter implements Filter {
             return;
         }
         try {
-            if (JWTUtil.isExpired(token)) {
-                response.setStatus(SC_UNAUTHORIZED);
-                response.getWriter().write("Token has Expired");
-                return;
-            }
+            UserClaims claims = JWTUtil.parseToken(token);
+            ThreadLocalUtil.set(claims);
             filterChain.doFilter(servletRequest, servletResponse);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(SC_UNAUTHORIZED);
+            response.getWriter().write("Token has Expired");
         } catch (Exception e) {
             response.setStatus(SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized: Invalid Token");

@@ -30,4 +30,9 @@ public class UserServiceImpl implements UserService {
         String passwordHash = userMapper.getPasswordHashByUsername(username);
         return BCryptUtil.checkPassword(password, passwordHash);
     }
+
+    @Override
+    public void deleteUser(String username) {
+        userMapper.deleteUser(username);
+    }
 }

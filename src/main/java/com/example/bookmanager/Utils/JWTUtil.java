@@ -2,7 +2,6 @@ package com.example.bookmanager.Utils;
 
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -34,20 +33,5 @@ public class JWTUtil {
                 .parseSignedClaims(token)
                 .getPayload();
         return new UserClaims((String) claims.get("userName"));
-    }
-
-    public static boolean isExpired(String token) {
-        token = token.replace("Bearer ", "");
-        try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-            Date expiration = claims.getExpiration();
-            return expiration.before(new Date());
-        } catch (ExpiredJwtException e) {
-            return true;
-        }
     }
 }
