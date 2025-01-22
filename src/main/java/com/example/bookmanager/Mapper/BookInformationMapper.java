@@ -2,10 +2,7 @@ package com.example.bookmanager.Mapper;
 
 import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.Entity.BookInformation;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,9 +14,22 @@ public interface BookInformationMapper {
     @Select("select * from book_information where isbn = #{isbn}")
     BookInformation findByIsbn(String isbn);
 
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status " +
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name " +
+            "from book_information bi join books b on bi.isbn = b.isbn " +
+            "left join libraries l on l.id = b.library" +
+            " where b.id = #{id}")
+    @Results({
+            @Result(property = "library", column = "name"),
+    })
+    BookDTO findById(Long id);
+
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name " +
             "from books b " +
-            "join book_information bi on b.isbn = bi.isbn")
+            "join book_information bi on b.isbn = bi.isbn " +
+            "left join libraries l on l.id = b.library")
+    @Results({
+            @Result(property = "library", column = "name"),
+    })
     List<BookDTO> findAllBooks();
 
     @Insert("insert into book_information (isbn, title, author, publisher) values (#{isbn}, #{title}, #{author}, #{publisher})")

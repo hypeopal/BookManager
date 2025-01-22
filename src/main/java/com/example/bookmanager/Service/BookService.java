@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface BookService {
     BookInformation findByTitle(String title);
+    BookDTO findById(Long id);
     List<BookDTO> findAllBooks();
     void addBooks(AddBookRequest addBookRequest);
     void addBookInfo(BookInfoRequest bookInfoRequest);

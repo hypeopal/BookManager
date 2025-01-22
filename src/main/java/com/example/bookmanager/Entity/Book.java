@@ -12,4 +12,5 @@ public class Book {
     private Long id;
     private String isbn;
     private BookStatus status = BookStatus.AVAILABLE;
+    private Integer library = null;
 }

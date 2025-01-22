@@ -15,4 +15,5 @@ public class BookDTO {
     private String author;
     private String publisher;
     private BookStatus status;
+    private String library;
 }

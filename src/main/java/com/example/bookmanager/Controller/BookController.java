@@ -92,4 +92,17 @@ public class BookController {
             return Result.error(1, "Failed to add book info: " + e.getClass().getSimpleName());
         }
     }
+
+    @GetMapping("/{id}")
+    public Result getBookById(@PathVariable("id") Long id) {
+        try {
+            BookDTO book = bookService.findById(id);
+            if (book == null) throw new BusinessException(7, "Book id not exists");
+            return ResultData.success("Get book by id successfully", book);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            return Result.error(7, "Failed to get book by id: " + e.getMessage());
+        }
+    }
 }

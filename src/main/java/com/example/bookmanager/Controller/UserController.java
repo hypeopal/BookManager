@@ -53,7 +53,6 @@ public class UserController {
     @GetMapping("/info")
     public Result getUserInfo() {
         UserClaims claims = ThreadLocalUtil.get();
-        ThreadLocalUtil.remove();
         return Result.success(claims.getUsername() + " info");
     }
 
@@ -61,7 +60,6 @@ public class UserController {
     public Result deleteUser() {
         UserClaims claims = ThreadLocalUtil.get();
         userService.deleteUser(claims.getUsername());
-        ThreadLocalUtil.remove();
         return Result.success("Delete user successfully");
     }
 }

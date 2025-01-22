@@ -13,4 +13,5 @@ public class AddBookRequest {
     private String author;     // 作者
     private String publisher;  // 出版社
     private int count;         // 添加的书籍数量
+    private int library;       // 所属图书馆
 }

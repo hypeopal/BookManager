@@ -30,6 +30,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public BookDTO findById(Long id) {
+        return bookInformationMapper.findById(id);
+    }
+
+    @Override
     public List<BookDTO> findAllBooks() {
         return bookInformationMapper.findAllBooks();
     }
@@ -52,7 +57,7 @@ public class BookServiceImpl implements BookService {
                 throw new BusinessException(7, "Book info not match ISBN");
         }
         for (int i = 0; i < addBookRequest.getCount(); i++) {
-            booksMapper.insertBook(addBookRequest.getIsbn());
+            booksMapper.insertBook(addBookRequest.getIsbn(), addBookRequest.getLibrary());
         }
     }
 
