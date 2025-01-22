@@ -3,10 +3,7 @@ package com.example.bookmanager.Controller;
 import com.example.bookmanager.DTO.UserRequest;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.UserService;
-import com.example.bookmanager.Utils.JWTUtil;
-import com.example.bookmanager.Utils.Result;
-import com.example.bookmanager.Utils.ThreadLocalUtil;
-import com.example.bookmanager.Utils.UserClaims;
+import com.example.bookmanager.Utils.*;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +22,7 @@ public class UserController {
     * sign up an account
     * */
     @PostMapping("/signup")
-    public Result<String> signup(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
+    public Result signup(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
@@ -35,36 +32,36 @@ public class UserController {
         }
         // not exists
         userService.signup(userRequest.getUsername(), userRequest.getPassword());
-        return Result.success(null, "Signup successfully");
+        return Result.success("Signup successfully");
     }
 
     /*
     * login
     * */
     @GetMapping("/login")
-    public Result<Map<String, String>> login(@RequestBody UserRequest userRequest) {
+    public Result login(@RequestBody UserRequest userRequest) {
         if (userService.isUsernameExists(userRequest.getUsername())) {
             if (userService.validateLogin(userRequest.getUsername(), userRequest.getPassword())) {
                 String token = JWTUtil.generateToken(new UserClaims(userRequest.getUsername()));
                 Map<String, String> map = Map.of("token", token);
-                return Result.success(map, "Login successfully");
+                return ResultData.success("Login successfully", map);
             }
         }
         throw new BusinessException(5, "Invalid username or password");
     }
 
     @GetMapping("/info")
-    public Result<String> getUserInfo() {
+    public Result getUserInfo() {
         UserClaims claims = ThreadLocalUtil.get();
         ThreadLocalUtil.remove();
         return Result.success(claims.getUsername() + " info");
     }
 
     @DeleteMapping
-    public Result<String> deleteUser() {
+    public Result deleteUser() {
         UserClaims claims = ThreadLocalUtil.get();
         userService.deleteUser(claims.getUsername());
         ThreadLocalUtil.remove();
-        return Result.success(null, "Delete user successfully");
+        return Result.success("Delete user successfully");
     }
 }

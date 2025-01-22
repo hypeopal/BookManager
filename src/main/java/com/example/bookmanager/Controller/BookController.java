@@ -7,6 +7,7 @@ import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.BookService;
 import com.example.bookmanager.Utils.Result;
+import com.example.bookmanager.Utils.ResultData;
 import jakarta.validation.Valid;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindingResult;
@@ -27,10 +28,10 @@ public class BookController {
     * Get list of all books
     * */
     @GetMapping
-    public Result<List<BookDTO>> getAllBooks() {
+    public Result getAllBooks() {
         try {
             List<BookDTO> list = bookService.findAllBooks();
-            return Result.success(list, "Get list of books successfully");
+            return ResultData.success("Get list of books successfully", list);
         } catch (Exception e) {
             if (e.getClass().getSimpleName().equals("BusinessException")) throw e;
             return Result.error(2, "Failed to get list of books: " + e.getMessage());
@@ -42,10 +43,10 @@ public class BookController {
     * /api/books/search
     * */
     @GetMapping("/search")
-    public Result<BookInformation> findByTitle(String title) {
+    public Result findByTitle(String title) {
         try {
             BookInformation bookInformation = bookService.findByTitle(title);
-            return Result.success(bookInformation, "Get book by title successfully");
+            return ResultData.success("Get book by title successfully", bookInformation);
         } catch (Exception e) {
             return Result.error(3, "Failed to get book by title: " + e.getMessage());
         }
@@ -58,13 +59,13 @@ public class BookController {
     * method:post
     * */
     @PostMapping
-    public Result<String> addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
+    public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBooks(addBookRequest);
-            return Result.success(null, "Books added successfully");
+            return Result.success("Books added successfully");
         } catch (Exception e) {
             if (e.getClass().getSimpleName().equals("BusinessException")) throw e;
             return Result.error(1, "Failed to add books: " + e.getClass().getSimpleName());
@@ -77,13 +78,13 @@ public class BookController {
     * method:post
     * */
     @PostMapping("/info")
-    public Result<String> addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
+    public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBookInfo(bookInfoRequest);
-            return Result.success(null, "Book info added successfully");
+            return Result.success("Book info added successfully");
         } catch (DuplicateKeyException e) {
             throw new BusinessException(1, "Book info already exists");
         } catch (Exception e) {

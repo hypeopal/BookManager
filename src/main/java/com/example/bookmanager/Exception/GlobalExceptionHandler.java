@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Result<String>> handleBookInfoMismatch(BusinessException e) {
+    public ResponseEntity<Result> handleBookInfoMismatch(BusinessException e) {
         return new ResponseEntity<>(Result.error(e.getErrCode(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
