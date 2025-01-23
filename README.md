@@ -14,7 +14,10 @@
        isbn VARCHAR(20) NOT NULL
            CONSTRAINT fk_books_information
            REFERENCES book_information
-           ON DELETE CASCADE
+           ON DELETE CASCADE,
+       status book_status DEFAULT 'AVAILABLE'::book_status NOT NULL,
+       library INTEGER REFERENCES libraries
+           ON DELETE SET NULL
    );
    ```
 
@@ -29,7 +32,7 @@
    );
    ```
 
-3. User
+3. users
    
    ```sql
    CREATE TABLE users (
@@ -38,6 +41,17 @@
        password VARCHAR(255) NOT NULL,
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
    );
+   ```
+
+4. Libraries
+   
+   ```sql
+   CREATE TABLE libraries (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        address VARCHAR(200) NOT NULL,
+        phone VARCHAR(100) NOT NULL
+   )
    ```
 
 ## Design of API
@@ -103,12 +117,19 @@
    ```json
    {
      "code": 0,
-     "message": "Signup successfully",
-     "data": null
+     "message": "Signup successfully"
    }
    ```
    
 3. /api/books
    - GET
    
+   > Path: /api/books
+   > 
+   > Method: GET
+   > 
+   > Description: Get a list of all books
+
+   
+
    - POST

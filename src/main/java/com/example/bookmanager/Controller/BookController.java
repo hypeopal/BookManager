@@ -9,6 +9,7 @@ import com.example.bookmanager.Service.BookService;
 import com.example.bookmanager.Utils.Result;
 import com.example.bookmanager.Utils.ResultData;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,10 @@ public class BookController {
         try {
             List<BookDTO> list = bookService.findAllBooks();
             return ResultData.success("Get list of books successfully", list);
-        } catch (Exception e) {
-            if (e.getClass().getSimpleName().equals("BusinessException")) throw e;
+        } catch (BusinessException e) {
+            throw e;
+        }
+        catch (Exception e) {
             return Result.error(2, "Failed to get list of books: " + e.getMessage());
         }
     }
@@ -61,14 +64,29 @@ public class BookController {
     @PostMapping
     public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBooks(addBookRequest);
             return Result.success("Books added successfully");
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(7, "Library not exists");
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            if (e.getClass().getSimpleName().equals("BusinessException")) throw e;
-            return Result.error(1, "Failed to add books: " + e.getClass().getSimpleName());
+            return Result.error(1, "Failed to add books: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public Result deleteBook(@PathVariable("id") Long id) {
+        try {
+            bookService.deleteBook(id);
+            return Result.success("Delete book successfully");
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            return Result.error(1, "Failed to delete book: " + e.getMessage());
         }
     }
 
@@ -80,15 +98,16 @@ public class BookController {
     @PostMapping("/info")
     public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBookInfo(bookInfoRequest);
             return Result.success("Book info added successfully");
         } catch (DuplicateKeyException e) {
             throw new BusinessException(1, "Book info already exists");
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            if (e.getClass().getSimpleName().equals("BusinessException")) throw e;
             return Result.error(1, "Failed to add book info: " + e.getClass().getSimpleName());
         }
     }

@@ -65,4 +65,9 @@ public class BookServiceImpl implements BookService {
     public void addBookInfo(BookInfoRequest bookInfoRequest) {
         bookInformationMapper.insertBookInformation(new BookInformation(bookInfoRequest.getIsbn(), bookInfoRequest.getTitle(), bookInfoRequest.getAuthor(), bookInfoRequest.getPublisher()));
     }
+
+    @Override
+    public void deleteBook(Long id) {
+        booksMapper.deleteBook(id);
+    }
 }

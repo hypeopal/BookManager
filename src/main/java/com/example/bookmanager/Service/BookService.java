@@ -13,4 +13,5 @@ public interface BookService {
     List<BookDTO> findAllBooks();
     void addBooks(AddBookRequest addBookRequest);
     void addBookInfo(BookInfoRequest bookInfoRequest);
+    void deleteBook(Long id);
 }
