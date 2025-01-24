@@ -3,6 +3,7 @@ package com.example.bookmanager.Controller;
 import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.AddBookRequest;
 import com.example.bookmanager.DTO.BookInfoRequest;
+import com.example.bookmanager.DTO.PageContent;
 import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.BookService;
@@ -14,37 +15,42 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
     private final BookService bookService;
+
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
     /*
-    * Get list of all books
-    * */
+     * Get list of all books
+     * */
     @GetMapping
-    public Result getAllBooks() {
+    public Result getAllBooks(@RequestParam(required = false) String status,
+                              @RequestParam(required = false) Integer page,
+                              @RequestParam(required = false) Integer count) {
+        if (status != null && status.trim().isEmpty()) status = null;
+        if (page == null || count == null) {
+            page = null; count = null;
+        }
         try {
-            List<BookDTO> list = bookService.findAllBooks();
+            PageContent<BookDTO> list = bookService.findAllBooks(status, page, count);
             return ResultData.success("Get list of books successfully", list);
         } catch (BusinessException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Result.error(2, "Failed to get list of books: " + e.getMessage());
         }
     }
 
     /*
-    * Search book by title
-    * /api/books/search
-    * */
+     * Search book by title
+     * /api/books/search
+     * */
     @GetMapping("/search")
     public Result findByTitle(String title) {
         try {
@@ -57,10 +63,10 @@ public class BookController {
     }
 
     /*
-    * add books
-    * /api/books
-    * method:post
-    * */
+     * add books
+     * /api/books
+     * method:post
+     * */
     @PostMapping
     public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -91,10 +97,10 @@ public class BookController {
     }
 
     /*
-    * add book info
-    * /api/books/info
-    * method:post
-    * */
+     * add book info
+     * /api/books/info
+     * method:post
+     * */
     @PostMapping("/info")
     public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

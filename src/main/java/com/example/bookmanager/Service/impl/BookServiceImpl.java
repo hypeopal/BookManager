@@ -3,15 +3,17 @@ package com.example.bookmanager.Service.impl;
 import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.AddBookRequest;
 import com.example.bookmanager.DTO.BookInfoRequest;
+import com.example.bookmanager.DTO.PageContent;
 import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.BookInformationMapper;
 import com.example.bookmanager.Mapper.BooksMapper;
 import com.example.bookmanager.Service.BookService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -35,8 +37,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDTO> findAllBooks() {
-        return bookInformationMapper.findAllBooks();
+    public PageContent<BookDTO> findAllBooks(String status, Integer page, Integer count) {
+        PageContent<BookDTO> pc = new PageContent<>();
+        if (page == null) PageHelper.startPage(1, 10000);
+        else PageHelper.startPage(page, count);
+        Page<BookDTO> p = (Page<BookDTO>) bookInformationMapper.findAllBooks(status);
+        pc.setCount((int) p.getTotal());
+        pc.setPage(p.getPageNum());
+        pc.setContent(p.getResult());
+        return pc;
     }
 
     @Override

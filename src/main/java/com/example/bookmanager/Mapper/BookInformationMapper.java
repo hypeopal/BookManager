@@ -23,14 +23,7 @@ public interface BookInformationMapper {
     })
     BookDTO findById(Long id);
 
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name " +
-            "from books b " +
-            "join book_information bi on b.isbn = bi.isbn " +
-            "left join libraries l on l.id = b.library")
-    @Results({
-            @Result(property = "library", column = "name"),
-    })
-    List<BookDTO> findAllBooks();
+    List<BookDTO> findAllBooks(String status);
 
     @Insert("insert into book_information (isbn, title, author, publisher) values (#{isbn}, #{title}, #{author}, #{publisher})")
     void insertBookInformation(BookInformation bookInformation);

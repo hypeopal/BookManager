@@ -24,7 +24,7 @@ public class UserController {
     @PostMapping("/signup")
     public Result signup(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return Result.error(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         // check if username exists
         if (userService.isUsernameExists(userRequest.getUsername())) {
@@ -39,7 +39,10 @@ public class UserController {
     * login
     * */
     @GetMapping("/login")
-    public Result login(@RequestBody UserRequest userRequest) {
+    public Result login(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
         if (userService.isUsernameExists(userRequest.getUsername())) {
             if (userService.validateLogin(userRequest.getUsername(), userRequest.getPassword())) {
                 String token = JWTUtil.generateToken(new UserClaims(userRequest.getUsername()));
@@ -47,7 +50,7 @@ public class UserController {
                 return ResultData.success("Login successfully", map);
             }
         }
-        throw new BusinessException(5, "Invalid username or password");
+        throw new BusinessException(7, "Invalid username or password");
     }
 
     @GetMapping("/info")
