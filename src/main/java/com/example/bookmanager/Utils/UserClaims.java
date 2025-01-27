@@ -11,8 +11,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class UserClaims {
     private String username;
+    private boolean status;
+    private boolean admin;
 
     Map<String, Object> toMap() {
-        return Map.of("userName", username);
+        return Map.of("userName", username, "status", status, "admin", admin);
     }
 }

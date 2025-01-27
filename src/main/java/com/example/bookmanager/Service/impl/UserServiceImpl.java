@@ -1,8 +1,10 @@
 package com.example.bookmanager.Service.impl;
 
+import com.example.bookmanager.Entity.User;
 import com.example.bookmanager.Mapper.UserMapper;
 import com.example.bookmanager.Service.UserService;
 import com.example.bookmanager.Utils.BCryptUtil;
+import com.example.bookmanager.Utils.UserClaims;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,9 +28,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean validateLogin(String username, String password) {
+    public UserClaims validateLogin(String username, String password) {
+        User user = userMapper.getUserByUsername(username);
         String passwordHash = userMapper.getPasswordHashByUsername(username);
-        return BCryptUtil.checkPassword(password, passwordHash);
+        if (!BCryptUtil.checkPassword(password, passwordHash)) return null;
+        return new UserClaims(username, user.isStatus(), user.isAdmin());
     }
 
     @Override

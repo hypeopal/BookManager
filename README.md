@@ -1,6 +1,6 @@
 # BookManager
 
-> A backend project of a book management system
+> A backend project of a book management system built with Spring Boot.
 
 ## Analysis of Functions
 
@@ -38,8 +38,10 @@
    CREATE TABLE users (
        id SERIAL PRIMARY KEY,
        username VARCHAR(50) UNIQUE NOT NULL,
-       password VARCHAR(255) NOT NULL,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       password VARCHAR(127) NOT NULL,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       status BOOLEAN DEFAULT TRUE NOT NULL, -- account status, true: normal, false: disabled
+       admin BOOLEAN DEFAULT FALSE NOT NULL
    );
    ```
 

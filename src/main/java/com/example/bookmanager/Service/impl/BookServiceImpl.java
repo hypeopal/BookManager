@@ -14,6 +14,8 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -39,12 +41,18 @@ public class BookServiceImpl implements BookService {
     @Override
     public PageContent<BookDTO> findAllBooks(String status, Integer page, Integer count) {
         PageContent<BookDTO> pc = new PageContent<>();
-        if (page == null) PageHelper.startPage(1, 10000);
-        else PageHelper.startPage(page, count);
-        Page<BookDTO> p = (Page<BookDTO>) bookInformationMapper.findAllBooks(status);
-        pc.setCount((int) p.getTotal());
-        pc.setPage(p.getPageNum());
-        pc.setContent(p.getResult());
+        if (page != null && count != null) PageHelper.startPage(page, count);
+        List<BookDTO> list = bookInformationMapper.findAllBooks(status);
+        if (page != null && count != null) {
+            Page<BookDTO> pageList = (Page<BookDTO>) list;
+            pc.setCount((int) pageList.getTotal());
+            pc.setPage(pageList.getPageNum());
+            pc.setContent(pageList.getResult());
+        } else {
+            pc.setCount(list.size());
+            pc.setPage(1);
+            pc.setContent(list);
+        }
         return pc;
     }
 

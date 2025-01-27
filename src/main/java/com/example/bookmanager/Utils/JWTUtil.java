@@ -32,6 +32,6 @@ public class JWTUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        return new UserClaims((String) claims.get("userName"));
+        return new UserClaims((String) claims.get("userName"), (boolean) claims.get("status"), (boolean) claims.get("admin"));
     }
 }

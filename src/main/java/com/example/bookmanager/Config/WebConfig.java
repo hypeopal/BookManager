@@ -1,7 +1,6 @@
 package com.example.bookmanager.Config;
 
-import com.example.bookmanager.Utils.AuthInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bookmanager.Interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

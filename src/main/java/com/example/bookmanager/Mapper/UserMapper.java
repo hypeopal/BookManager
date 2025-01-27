@@ -1,5 +1,6 @@
 package com.example.bookmanager.Mapper;
 
+import com.example.bookmanager.Entity.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,6 +16,9 @@ public interface UserMapper {
 
     @Select("select password from users where username = #{username}")
     String getPasswordHashByUsername(String username);
+
+    @Select("select * from users where username = #{username}")
+    User getUserByUsername(String username);
 
     @Delete("delete from users where username = #{username}")
     void deleteUser(String username);

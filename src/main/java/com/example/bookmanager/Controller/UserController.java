@@ -44,8 +44,9 @@ public class UserController {
             throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         if (userService.isUsernameExists(userRequest.getUsername())) {
-            if (userService.validateLogin(userRequest.getUsername(), userRequest.getPassword())) {
-                String token = JWTUtil.generateToken(new UserClaims(userRequest.getUsername()));
+            UserClaims claims = userService.validateLogin(userRequest.getUsername(), userRequest.getPassword());
+            if (claims != null) {
+                String token = JWTUtil.generateToken(claims);
                 Map<String, String> map = Map.of("token", token);
                 return ResultData.success("Login successfully", map);
             }

@@ -1,5 +1,6 @@
 package com.example.bookmanager.Controller;
 
+import com.example.bookmanager.Annotation.RequireAdmin;
 import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.AddBookRequest;
 import com.example.bookmanager.DTO.BookInfoRequest;
@@ -67,6 +68,7 @@ public class BookController {
      * /api/books
      * method:post
      * */
+    @RequireAdmin
     @PostMapping
     public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
