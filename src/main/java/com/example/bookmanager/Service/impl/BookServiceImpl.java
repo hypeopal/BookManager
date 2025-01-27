@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
             if (!information.getTitle().equals(addBookRequest.getTitle()) ||
                     !information.getAuthor().equals(addBookRequest.getAuthor()) ||
                     !information.getPublisher().equals(addBookRequest.getPublisher()))
-                throw new BusinessException(7, "Book info not match ISBN");
+                throw new BusinessException(7, 400, "Book info not match ISBN");
         }
         for (int i = 0; i < addBookRequest.getCount(); i++) {
             booksMapper.insertBook(addBookRequest.getIsbn(), addBookRequest.getLibrary());

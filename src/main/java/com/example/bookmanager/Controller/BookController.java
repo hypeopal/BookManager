@@ -1,8 +1,8 @@
 package com.example.bookmanager.Controller;
 
 import com.example.bookmanager.Annotation.RequireAdmin;
-import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.AddBookRequest;
+import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.BookInfoRequest;
 import com.example.bookmanager.DTO.PageContent;
 import com.example.bookmanager.Entity.BookInformation;
@@ -38,7 +38,7 @@ public class BookController {
         if (page == null || count == null) {
             page = null; count = null;
         }
-        try {
+        try { //TODO define business code
             PageContent<BookDTO> list = bookService.findAllBooks(status, page, count);
             return ResultData.success("Get list of books successfully", list);
         } catch (BusinessException e) {
@@ -72,13 +72,13 @@ public class BookController {
     @PostMapping
     public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(7, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBooks(addBookRequest);
             return Result.success("Books added successfully");
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException(7, "Library not exists");
+            throw new BusinessException(7, 400, "Library not exists");
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
@@ -86,6 +86,7 @@ public class BookController {
         }
     }
 
+    @RequireAdmin
     @DeleteMapping("/{id}")
     public Result deleteBook(@PathVariable("id") Long id) {
         try {
@@ -103,16 +104,17 @@ public class BookController {
      * /api/books/info
      * method:post
      * */
+    @RequireAdmin
     @PostMapping("/info")
     public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BusinessException(7, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(7, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBookInfo(bookInfoRequest);
             return Result.success("Book info added successfully");
         } catch (DuplicateKeyException e) {
-            throw new BusinessException(1, "Book info already exists");
+            throw new BusinessException(1, 400, "Book info already exists");
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
@@ -124,7 +126,7 @@ public class BookController {
     public Result getBookById(@PathVariable("id") Long id) {
         try {
             BookDTO book = bookService.findById(id);
-            if (book == null) throw new BusinessException(7, "Book id not exists");
+            if (book == null) throw new BusinessException(7, 400, "Book id not exists");
             return ResultData.success("Get book by id successfully", book);
         } catch (BusinessException e) {
             throw e;
