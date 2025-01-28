@@ -24,10 +24,9 @@ public class LibraryController {
     public Result getAllLib() {
         try {
             List<Library> list = libraryService.findAllLibrary();
-            if (list != null) return ResultData.success("Get list of libraries successfully", list);
-            else return Result.error(1, "Failed to get list of libraries");
+            return ResultData.success("Get list of libraries successfully", list);
         } catch (Exception e) {
-            return Result.error(1, "Failed to get list of libraries: " + e.getMessage());
+            return Result.error(4, "Failed to get list of libraries: " + e.getMessage());
         }
     }
 
@@ -35,10 +34,9 @@ public class LibraryController {
     public Result getAllBooksByLib() {
         try {
             List<LibraryBooks> list = libraryService.findAllLibraryBooks();
-            if (list != null) return ResultData.success("Get list of books successfully", list);
-            else return Result.error(1, "Failed to get list of books");
+            return ResultData.success("Get list of books successfully", list);
         } catch (Exception e) {
-            return Result.error(1, "Failed to get list of books: " + e.getMessage());
+            return Result.error(4, "Failed to get list of books: " + e.getMessage());
         }
     }
 }

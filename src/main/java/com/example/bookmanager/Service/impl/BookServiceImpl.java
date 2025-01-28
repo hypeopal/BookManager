@@ -48,10 +48,12 @@ public class BookServiceImpl implements BookService {
             pc.setCount((int) pageList.getTotal());
             pc.setPage(pageList.getPageNum());
             pc.setContent(pageList.getResult());
+            pc.setSize(pageList.getPageSize());
         } else {
             pc.setCount(list.size());
             pc.setPage(1);
             pc.setContent(list);
+            pc.setSize(list.size());
         }
         return pc;
     }
@@ -71,7 +73,7 @@ public class BookServiceImpl implements BookService {
             if (!information.getTitle().equals(addBookRequest.getTitle()) ||
                     !information.getAuthor().equals(addBookRequest.getAuthor()) ||
                     !information.getPublisher().equals(addBookRequest.getPublisher()))
-                throw new BusinessException(7, 400, "Book info not match ISBN");
+                throw new BusinessException(2, 400, "Book info not match ISBN");
         }
         for (int i = 0; i < addBookRequest.getCount(); i++) {
             booksMapper.insertBook(addBookRequest.getIsbn(), addBookRequest.getLibrary());

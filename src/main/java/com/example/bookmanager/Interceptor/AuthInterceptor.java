@@ -18,16 +18,16 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         String token = request.getHeader("Authorization");
         if (token == null || token.isEmpty()) {
-            throw new BusinessException(7, 401, "Unauthorized: No Token");
+            throw new BusinessException(1, 401, "Unauthorized: No Token");
         }
         try {
             UserClaims claims = JWTUtil.parseToken(token);
             ThreadLocalUtil.set(claims);
             return true;
         } catch (ExpiredJwtException e) {
-            throw new BusinessException(1, 401, "Token has Expired");
+            throw new BusinessException(2, 401, "Token has Expired");
         } catch (Exception e) {
-            throw new BusinessException(7, 401, "Unauthorized: Invalid Token");
+            throw new BusinessException(2, 401, "Unauthorized: Invalid Token");
         }
     }
 

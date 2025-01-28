@@ -58,6 +58,38 @@
 
 ## Design of API
 
+- Response Message Structure
+  
+  1. Result (Base Response)
+     
+     ```json
+     {
+         "code": 0,
+         "message": "success"
+     }
+     ```
+  
+  2. ResultData (Response with Data)
+     
+     ```json
+     {
+         "code": 0,
+         "message": "success",
+         "data": {}
+     }
+     ```
+
+- Response Code Definition
+
+| Code(!0 is error code) |         Comment         |
+|:----------------------:|:-----------------------:|
+|           0            |         success         |
+|           1            |    no authentication    |
+|           2            |    invalid parameter    |
+|           3            | parameter format error  |
+|           4            |    unspecified error    |
+|           5            | insufficient permission |
+
 1. Login
    
    > Path: /api/user/login
@@ -69,9 +101,9 @@
    contentType: application/json
    
    | Para name |  Type  | Necessity |                Comment                 |
-   |-----------|:------:|-----------|:--------------------------------------:|
-   | username  | string | yes       | contains num, char, symbol, 5-15 chars |
-   | password  | string | yes       | must contains char and num, 6-20 chars |
+   |:---------:|:------:|:---------:|:--------------------------------------:|
+   | username  | string |    yes    | contains num, char, symbol, 5-15 chars |
+   | password  | string |    yes    | must contains char and num, 6-20 chars |
    
    ```json
    {
@@ -122,8 +154,9 @@
      "message": "Signup successfully"
    }
    ```
-   
+
 3. /api/books
+   
    - GET
    
    > Path: /api/books
@@ -131,7 +164,5 @@
    > Method: GET
    > 
    > Description: Get a list of all books
-
    
-
    - POST

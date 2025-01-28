@@ -8,5 +8,6 @@ import java.util.List;
 public class PageContent<T> {
     private int page;
     private int count;
+    private int size;
     private List<T> content;
 }

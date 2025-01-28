@@ -16,7 +16,7 @@ public class AdminAuthAspect {
     public Object checkAdminPermission(ProceedingJoinPoint joinPoint, RequireAdmin requireAdmin) throws Throwable {
         UserClaims claims = ThreadLocalUtil.get();
         if (claims == null || !claims.isAdmin()) {
-            throw new BusinessException(1, 403, "Forbidden: Admin access required");
+            throw new BusinessException(5, 403, "Forbidden: Admin access required");
         }
         return joinPoint.proceed();
     }

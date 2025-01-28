@@ -25,11 +25,11 @@ public class UserController {
     @PostMapping("/signup")
     public Result signup(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BusinessException(7, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         // check if username exists
         if (userService.isUsernameExists(userRequest.getUsername())) {
-            throw new BusinessException(4, 400, "Username already exists");
+            throw new BusinessException(2, 400, "Username already exists");
         }
         // not exists
         userService.signup(userRequest.getUsername(), userRequest.getPassword());
@@ -42,7 +42,7 @@ public class UserController {
     @GetMapping("/login")
     public Result login(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BusinessException(7, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         if (userService.isUsernameExists(userRequest.getUsername())) {
             UserClaims claims = userService.validateLogin(userRequest.getUsername(), userRequest.getPassword());
@@ -52,7 +52,7 @@ public class UserController {
                 return ResultData.success("Login successfully", map);
             }
         }
-        throw new BusinessException(7, 400, "Invalid username or password");
+        throw new BusinessException(2, 400, "Invalid username or password");
     }
 
     @GetMapping("/info")
@@ -75,7 +75,7 @@ public class UserController {
             userService.deleteUser(username);
             return Result.success("Delete user successfully");
         } catch (Exception e) {
-            throw new BusinessException(1, 400, "Failed to delete user: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to delete user: " + e.getMessage());
         }
     }
 }

@@ -38,13 +38,13 @@ public class BookController {
         if (page == null || count == null) {
             page = null; count = null;
         }
-        try { //TODO define business code
+        try {
             PageContent<BookDTO> list = bookService.findAllBooks(status, page, count);
             return ResultData.success("Get list of books successfully", list);
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(2, "Failed to get list of books: " + e.getMessage());
+            return Result.error(4, "Failed to get list of books: " + e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class BookController {
             BookInformation bookInformation = bookService.findByTitle(title);
             return ResultData.success("Get book by title successfully", bookInformation);
         } catch (Exception e) {
-            return Result.error(3, "Failed to get book by title: " + e.getMessage());
+            return Result.error(4, "Failed to get book by title: " + e.getMessage());
         }
 
     }
@@ -72,17 +72,17 @@ public class BookController {
     @PostMapping
     public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BusinessException(7, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBooks(addBookRequest);
             return Result.success("Books added successfully");
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException(7, 400, "Library not exists");
+            throw new BusinessException(2, 400, "Library not exists");
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(1, "Failed to add books: " + e.getMessage());
+            return Result.error(4, "Failed to add books: " + e.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class BookController {
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(1, "Failed to delete book: " + e.getMessage());
+            return Result.error(4, "Failed to delete book: " + e.getMessage());
         }
     }
 
@@ -108,17 +108,17 @@ public class BookController {
     @PostMapping("/info")
     public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BusinessException(7, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
         try {
             bookService.addBookInfo(bookInfoRequest);
             return Result.success("Book info added successfully");
         } catch (DuplicateKeyException e) {
-            throw new BusinessException(1, 400, "Book info already exists");
+            throw new BusinessException(2, 400, "Book info already exists");
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(1, "Failed to add book info: " + e.getClass().getSimpleName());
+            return Result.error(4, "Failed to add book info: " + e.getClass().getSimpleName());
         }
     }
 
@@ -126,12 +126,12 @@ public class BookController {
     public Result getBookById(@PathVariable("id") Long id) {
         try {
             BookDTO book = bookService.findById(id);
-            if (book == null) throw new BusinessException(7, 400, "Book id not exists");
+            if (book == null) throw new BusinessException(2, 400, "Book id not exists");
             return ResultData.success("Get book by id successfully", book);
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(7, "Failed to get book by id: " + e.getMessage());
+            return Result.error(4, "Failed to get book by id: " + e.getMessage());
         }
     }
 }
