@@ -1,6 +1,6 @@
 package com.example.bookmanager.DTO;
 
-import com.example.bookmanager.Type.BookStatus;
+import com.example.bookmanager.Type.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +16,5 @@ public class BookDTO {
     private String publisher;
     private BookStatus status;
     private String library;
+    private BookCategory category;
 }

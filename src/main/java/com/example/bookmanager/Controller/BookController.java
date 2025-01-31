@@ -117,7 +117,9 @@ public class BookController {
             throw new BusinessException(2, 400, "Book info already exists");
         } catch (BusinessException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException(2, 400, "Book category not exists");
+        }catch (Exception e) {
             return Result.error(4, "Failed to add book info: " + e.getClass().getSimpleName());
         }
     }

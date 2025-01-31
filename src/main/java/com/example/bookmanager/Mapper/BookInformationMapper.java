@@ -14,7 +14,7 @@ public interface BookInformationMapper {
     @Select("select * from book_information where isbn = #{isbn}")
     BookInformation findByIsbn(String isbn);
 
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name " +
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name, bi.category " +
             "from book_information bi join books b on bi.isbn = b.isbn " +
             "left join libraries l on l.id = b.library" +
             " where b.id = #{id}")
@@ -25,7 +25,7 @@ public interface BookInformationMapper {
 
     List<BookDTO> findAllBooks(String status);
 
-    @Insert("insert into book_information (isbn, title, author, publisher) values (#{isbn}, #{title}, #{author}, #{publisher})")
+    @Insert("insert into book_information (isbn, title, author, publisher, category) values (#{isbn}, #{title}, #{author}, #{publisher}, #{category}::book_category)")
     void insertBookInformation(BookInformation bookInformation);
 
     @Select("select count(*) from book_information where isbn = #{isbn}")

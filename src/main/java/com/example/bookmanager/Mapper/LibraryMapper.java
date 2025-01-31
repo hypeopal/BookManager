@@ -14,7 +14,7 @@ public interface LibraryMapper {
     @Select("select * from libraries")
     List<Library> findAllLibrary();
 
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name " +
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name, bi.category " +
             "from libraries l " +
             "join books b on l.id = b.library " +
             "join book_information bi on b.isbn = bi.isbn " +

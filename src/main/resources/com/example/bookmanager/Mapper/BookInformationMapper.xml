@@ -7,7 +7,7 @@
         <result property="library" column="name" />
     </resultMap>
     <select id="findAllBooks" resultMap="BookDTOMap" resultType="com.example.bookmanager.DTO.BookDTO">
-        select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name
+        select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name, bi.category
         from books b
         join book_information bi on b.isbn = bi.isbn
         left join libraries l on l.id = b.library

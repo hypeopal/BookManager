@@ -9,6 +9,7 @@ import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.BookInformationMapper;
 import com.example.bookmanager.Mapper.BooksMapper;
 import com.example.bookmanager.Service.BookService;
+import com.example.bookmanager.Type.BookCategory;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void addBookInfo(BookInfoRequest bookInfoRequest) {
-        bookInformationMapper.insertBookInformation(new BookInformation(bookInfoRequest.getIsbn(), bookInfoRequest.getTitle(), bookInfoRequest.getAuthor(), bookInfoRequest.getPublisher()));
+        bookInformationMapper.insertBookInformation(new BookInformation(bookInfoRequest.getIsbn(), bookInfoRequest.getTitle(), bookInfoRequest.getAuthor(), bookInfoRequest.getPublisher(), BookCategory.valueOf(bookInfoRequest.getCategory())));
     }
 
     @Override
