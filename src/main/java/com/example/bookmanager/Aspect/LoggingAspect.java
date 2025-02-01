@@ -1,6 +1,7 @@
 package com.example.bookmanager.Aspect;
 
 import com.example.bookmanager.Utils.ThreadLocalUtil;
+import com.example.bookmanager.Utils.UserClaims;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,12 +18,15 @@ public class LoggingAspect {
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
-        String username = ThreadLocalUtil.get().getUsername();
+        UserClaims claims = ThreadLocalUtil.get();
 
-        logger.info("Entering method: {} with arguments: {} (operated by user: {})", methodName, args, username);
+        if (claims == null) {
+            logger.info("Entering method: {} with arguments: {}", methodName, args);
+        } else logger.info("Entering method: {} with arguments: {} (operated by user: {})", methodName, args, claims.getUsername());
         try {
             Object result = joinPoint.proceed();
-            logger.info("Exiting method: {} with result: {}", methodName, result);
+            if (result != null)
+                logger.info("Exiting method: {} with result: {}", methodName, result);
             return result;
         } catch (Exception e) {
             logger.error("Exception in method: {} with cause: {}", methodName, e.getMessage());

@@ -17,4 +17,10 @@
             </if>
         </where>
     </select>
+    <select id="findById" resultMap="BookDTOMap" resultType="com.example.bookmanager.DTO.BookDTO">
+        select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name, bi.category
+        from book_information bi join books b on bi.isbn = b.isbn
+        left join libraries l on l.id = b.library
+        where b.id = #{id}
+    </select>
 </mapper>

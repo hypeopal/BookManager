@@ -1,5 +1,6 @@
 package com.example.bookmanager.Service.impl;
 
+import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.Entity.User;
 import com.example.bookmanager.Mapper.UserMapper;
 import com.example.bookmanager.Service.UserService;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
         userMapper.insertUser(username, hashedPassword);
     }
 
+    @LogRecord
     @Override
     public UserClaims validateLogin(String username, String password) {
         User user = userMapper.getUserByUsername(username);

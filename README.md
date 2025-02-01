@@ -149,6 +149,18 @@
         '生物科学','医学与卫生','农业科学','工业技术','交通运输','航空航天','计算机科学','环境科学');
    ```
 
+7. Library_config
+   
+   ```sql
+   CREATE TABLE library_config (
+         id SERIAL PRIMARY KEY,
+         config_key VARCHAR(50) NOT NULL UNIQUE,
+         config_value VARCHAR(100) NOT NULL
+   );
+   ```
+   
+   
+
 ## Design of API
 
 - Response Message Structure

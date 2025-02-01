@@ -14,13 +14,6 @@ public interface BookInformationMapper {
     @Select("select * from book_information where isbn = #{isbn}")
     BookInformation findByIsbn(String isbn);
 
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name, bi.category " +
-            "from book_information bi join books b on bi.isbn = b.isbn " +
-            "left join libraries l on l.id = b.library" +
-            " where b.id = #{id}")
-    @Results({
-            @Result(property = "library", column = "name"),
-    })
     BookDTO findById(Long id);
 
     List<BookDTO> findAllBooks(String status);
