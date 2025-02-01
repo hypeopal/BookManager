@@ -1,5 +1,6 @@
 package com.example.bookmanager.Service.impl;
 
+import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.DTO.BookDTO;
 import com.example.bookmanager.DTO.AddBookRequest;
 import com.example.bookmanager.DTO.BookInfoRequest;
@@ -60,6 +61,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @LogRecord
     @Transactional
     public void addBooks(AddBookRequest addBookRequest) {
         if (bookInformationMapper.existsByIsbn(addBookRequest.getIsbn()) == 0) {
@@ -81,11 +83,13 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @LogRecord
     @Override
     public void addBookInfo(BookInfoRequest bookInfoRequest) {
         bookInformationMapper.insertBookInformation(new BookInformation(bookInfoRequest.getIsbn(), bookInfoRequest.getTitle(), bookInfoRequest.getAuthor(), bookInfoRequest.getPublisher(), BookCategory.valueOf(bookInfoRequest.getCategory())));
     }
 
+    @LogRecord
     @Override
     public void deleteBook(Long id) {
         booksMapper.deleteBook(id);
