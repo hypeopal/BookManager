@@ -15,6 +15,9 @@
             <if test="status != null">
                 b.status = #{status}::book_status
             </if>
+            <if test="category != null">
+                bi.category = #{category}::book_category
+            </if>
         </where>
     </select>
     <select id="findById" resultMap="BookDTOMap" resultType="com.example.bookmanager.DTO.BookDTO">

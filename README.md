@@ -158,8 +158,19 @@
          config_value VARCHAR(100) NOT NULL
    );
    ```
+
+8. Borrow_records
    
-   
+   ```sql
+   CREATE TABLE borrow_records (
+       user_id INTEGER NOT NULL
+           CONSTRAINT borrow_user_id_fk REFERENCES users ON DELETE CASCADE,
+       book_id INTEGER NOT NULL
+           CONSTRAINT borrow_book_id_fk REFERENCES books ON DELETE CASCADE,
+       borrow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+       return_date TIMESTAMP NOT NULL
+   );
+   ```
 
 ## Design of API
 

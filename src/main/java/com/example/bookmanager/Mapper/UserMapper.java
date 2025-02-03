@@ -1,10 +1,7 @@
 package com.example.bookmanager.Mapper;
 
 import com.example.bookmanager.Entity.User;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -22,4 +19,16 @@ public interface UserMapper {
 
     @Delete("delete from users where username = #{username}")
     void deleteUser(String username);
+
+    @Update("update users set admin = true where id = #{id}")
+    void setAdmin(Long id);
+
+    @Update("update users set admin = false where id = #{id}")
+    void unsetAdmin(Long id);
+
+    @Update("update users set status = false where id = #{id}")
+    void banUser(Long id);
+
+    @Update("update users set status = true where id = #{id}")
+    void unbanUser(Long id);
 }

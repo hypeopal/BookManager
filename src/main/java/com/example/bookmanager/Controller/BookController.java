@@ -33,18 +33,15 @@ public class BookController {
     @GetMapping
     public Result getAllBooks(@RequestParam(required = false) String status,
                               @RequestParam(required = false) Integer page,
-                              @RequestParam(required = false) Integer count) {
-        if (status != null && status.trim().isEmpty()) status = null;
-        if (page == null || count == null) {
-            page = null; count = null;
-        }
+                              @RequestParam(required = false) Integer count,
+                              @RequestParam(required = false) String category) {
         try {
-            PageContent<BookDTO> list = bookService.findAllBooks(status, page, count);
+            PageContent<BookDTO> list = bookService.findAllBooks(status, page, count, category);
             return ResultData.success("Get list of books successfully", list);
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(4, "Failed to get list of books: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to get list of books: " + e.getMessage());
         }
     }
 
@@ -58,7 +55,7 @@ public class BookController {
             BookInformation bookInformation = bookService.findByTitle(title);
             return ResultData.success("Get book by title successfully", bookInformation);
         } catch (Exception e) {
-            return Result.error(4, "Failed to get book by title: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to get book by title: " + e.getMessage());
         }
 
     }
@@ -82,7 +79,7 @@ public class BookController {
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(4, "Failed to add books: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to add books: " + e.getMessage());
         }
     }
 
@@ -95,7 +92,7 @@ public class BookController {
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(4, "Failed to delete book: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to delete book: " + e.getMessage());
         }
     }
 
@@ -120,7 +117,7 @@ public class BookController {
         } catch (IllegalArgumentException e) {
             throw new BusinessException(2, 400, "Book category not exists");
         }catch (Exception e) {
-            return Result.error(4, "Failed to add book info: " + e.getClass().getSimpleName());
+            throw new BusinessException(4, 400, "Failed to add book info: " + e.getMessage());
         }
     }
 
@@ -133,7 +130,19 @@ public class BookController {
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
-            return Result.error(4, "Failed to get book by id: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to get book by id: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/borrow/{id}")
+    public Result borrowBook(@PathVariable("id") Long id) {
+        try {
+            bookService.borrowBook(id);
+            return Result.success("Borrow book successfully");
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to borrow book: " + e.getMessage());
         }
     }
 }

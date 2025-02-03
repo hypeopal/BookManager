@@ -16,7 +16,7 @@ public interface BookInformationMapper {
 
     BookDTO findById(Long id);
 
-    List<BookDTO> findAllBooks(String status);
+    List<BookDTO> findAllBooks(String status, String category);
 
     @Insert("insert into book_information (isbn, title, author, publisher, category) values (#{isbn}, #{title}, #{author}, #{publisher}, #{category}::book_category)")
     void insertBookInformation(BookInformation bookInformation);

@@ -33,7 +33,7 @@ public class LibraryConfig {
     }
 
     public int getLoanDurationDays() {
-        return Integer.parseInt(getConfigValue("loanDurationDays"));
+        return Integer.parseInt(getConfigValue("loanDuration"));
     }
 
     public int getLoanMaxCount() {

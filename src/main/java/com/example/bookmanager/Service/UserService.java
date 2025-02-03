@@ -7,4 +7,8 @@ public interface UserService {
     void signup(String username, String password);
     UserClaims validateLogin(String username, String password);
     void deleteUser(String username);
+    void setAdmin(Long id);
+    void unsetAdmin(Long id);
+    void banUser(Long id);
+    void unbanUser(Long id);
 }

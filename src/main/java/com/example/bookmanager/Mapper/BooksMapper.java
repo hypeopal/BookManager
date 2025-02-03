@@ -1,8 +1,6 @@
 package com.example.bookmanager.Mapper;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface BooksMapper {
@@ -11,4 +9,10 @@ public interface BooksMapper {
 
     @Delete("delete from books where id = #{id}")
     void deleteBook(Long id);
+
+    @Select("select status from books where id = #{id}")
+    String getStatusById(Long id);
+
+    @Update("update books set status = #{status}::book_status where id = #{id}")
+    void updateStatusById(Long id, String status);
 }

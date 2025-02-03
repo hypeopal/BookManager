@@ -1,6 +1,7 @@
 package com.example.bookmanager.Controller;
 
 import com.example.bookmanager.Annotation.RequireAdmin;
+import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.LibraryConfigService;
 import com.example.bookmanager.Utils.Result;
 import com.example.bookmanager.Utils.ResultData;
@@ -19,7 +20,7 @@ public class ConfigController {
         try {
             return ResultData.success("Get config successfully", libraryConfigService.getConfig());
         } catch (Exception e) {
-            return Result.error(4, "Failed to get config: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to get config: " + e.getMessage());
         }
     }
 
@@ -30,7 +31,7 @@ public class ConfigController {
             libraryConfigService.setLoanDuration(value);
             return Result.success("Update loan duration successfully");
         } catch (Exception e) {
-            return Result.error(4, "Failed to update loan duration: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to update loan duration: " + e.getMessage());
         }
     }
 
@@ -41,7 +42,7 @@ public class ConfigController {
             libraryConfigService.setLoanMaxCount(value);
             return Result.success("Update loan max count successfully");
         } catch (Exception e) {
-            return Result.error(4, "Failed to update loan max count: " + e.getMessage());
+            throw new BusinessException(4, 400, "Failed to update loan max count: " + e.getMessage());
         }
     }
 }

@@ -34,11 +34,36 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.getUserByUsername(username);
         String passwordHash = userMapper.getPasswordHashByUsername(username);
         if (!BCryptUtil.checkPassword(password, passwordHash)) return null;
-        return new UserClaims(username, user.isStatus(), user.isAdmin());
+        return new UserClaims(user.getId(), username, user.isStatus(), user.isAdmin());
     }
 
+    @LogRecord
     @Override
     public void deleteUser(String username) {
         userMapper.deleteUser(username);
+    }
+
+    @LogRecord
+    @Override
+    public void setAdmin(Long id) {
+        userMapper.setAdmin(id);
+    }
+
+    @LogRecord
+    @Override
+    public void unsetAdmin(Long id) {
+        userMapper.unsetAdmin(id);
+    }
+
+    @LogRecord
+    @Override
+    public void banUser(Long id) {
+        userMapper.banUser(id);
+    }
+
+    @LogRecord
+    @Override
+    public void unbanUser(Long id) {
+        userMapper.unbanUser(id);
     }
 }

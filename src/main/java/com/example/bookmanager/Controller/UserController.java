@@ -78,4 +78,56 @@ public class UserController {
             throw new BusinessException(4, 400, "Failed to delete user: " + e.getMessage());
         }
     }
+
+    @RequireAdmin
+    @GetMapping("/setAdmin/{id}")
+    public Result setAdmin(@PathVariable("id") Long id) {
+        try {
+            userService.setAdmin(id);
+            return Result.success("Set admin successfully");
+        } catch (BusinessException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to set admin: " + e.getMessage());
+        }
+    }
+
+    @RequireAdmin
+    @GetMapping("/unsetAdmin/{id}")
+    public Result unsetAdmin(@PathVariable("id") Long id) {
+        try {
+            userService.unsetAdmin(id);
+            return Result.success("Unset admin successfully");
+        } catch (BusinessException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to unset admin: " + e.getMessage());
+        }
+    }
+
+    @RequireAdmin
+    @GetMapping("/ban/{id}")
+    public Result banUser(@PathVariable("id") Long id) {
+        try {
+            userService.banUser(id);
+            return Result.success("Ban user successfully");
+        } catch (BusinessException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to ban user: " + e.getMessage());
+        }
+    }
+
+    @RequireAdmin
+    @GetMapping("/unban/{id}")
+    public Result unbanUser(@PathVariable("id") Long id) {
+        try {
+            userService.unbanUser(id);
+            return Result.success("Unban user successfully");
+        } catch (BusinessException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to unban user: " + e.getMessage());
+        }
+    }
 }

@@ -10,4 +10,8 @@ class BookManagerApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void test() {
+
+    }
 }
