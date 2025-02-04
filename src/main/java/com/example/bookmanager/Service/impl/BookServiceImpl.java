@@ -135,4 +135,19 @@ public class BookServiceImpl implements BookService {
             throw new BusinessException(2, 200, "Book not available");
         }
     }
+
+    @Override
+    public List<BookDTO> getBorrowedBooks() {
+        return borrowRecordMapper.getBorrowedBooks(ThreadLocalUtil.get().getId());
+    }
+
+    @Override
+    @Transactional
+    @LogRecord
+    public void returnBook(Long id) {
+        if (borrowRecordMapper.isBorrowedByUser(id, ThreadLocalUtil.get().getId()) == 1) {
+            booksMapper.updateStatusById(id, "AVAILABLE");
+            borrowRecordMapper.deleteRecord(id, ThreadLocalUtil.get().getId());
+        } else throw new BusinessException(2, 400, "You didn't borrow this book");
+    }
 }

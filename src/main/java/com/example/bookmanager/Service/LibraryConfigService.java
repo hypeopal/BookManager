@@ -6,4 +6,5 @@ public interface LibraryConfigService {
     Map<String, String> getConfig();
     void setLoanMaxCount(int count);
     void setLoanDuration(int duration);
+    void setMaxRenewTimes(Integer value);
 }

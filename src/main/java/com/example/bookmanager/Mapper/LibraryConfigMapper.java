@@ -12,7 +12,7 @@ public interface LibraryConfigMapper {
             @Result(property = "key", column = "config_key"),
             @Result(property = "value", column = "config_value")
     })
-    List<LibraryConfigEntity> findConfig();
+    List<LibraryConfigEntity> getConfig();
 
     @Update("update library_config set config_value = #{value} where config_key = #{key}")
     void updateConfig(String key, String value);

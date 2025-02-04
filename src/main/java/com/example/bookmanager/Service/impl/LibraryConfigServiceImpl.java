@@ -31,4 +31,10 @@ public class LibraryConfigServiceImpl implements LibraryConfigService {
     public void setLoanDuration(int duration) {
         libraryConfig.setConfigByKey("loanDuration", String.valueOf(duration));
     }
+
+    @LogRecord
+    @Override
+    public void setMaxRenewTimes(Integer value) {
+        libraryConfig.setConfigByKey("maxRenewTimes", String.valueOf(value));
+    }
 }

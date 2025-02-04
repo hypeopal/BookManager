@@ -145,4 +145,25 @@ public class BookController {
             throw new BusinessException(4, 400, "Failed to borrow book: " + e.getMessage());
         }
     }
+
+    @GetMapping("/borrowed")
+    public Result getBorrowedBooks() {
+        try {
+            return ResultData.success("Get borrowed books successfully", bookService.getBorrowedBooks());
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to get borrowed books: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/return/{id}")
+    public Result returnBook(@PathVariable("id") Long id) {
+        try {
+            bookService.returnBook(id);
+            return Result.success("Return book successfully");
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to return book: " + e.getMessage());
+        }
+    }
 }

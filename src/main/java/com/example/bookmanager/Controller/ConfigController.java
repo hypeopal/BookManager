@@ -45,4 +45,15 @@ public class ConfigController {
             throw new BusinessException(4, 400, "Failed to update loan max count: " + e.getMessage());
         }
     }
+
+    @RequireAdmin
+    @PostMapping("/maxRenewTimes")
+    public Result updateMaxRenewTimes(@RequestParam Integer value) {
+        try {
+            libraryConfigService.setMaxRenewTimes(value);
+            return Result.success("Update max renew times successfully");
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to update max renew times: " + e.getMessage());
+        }
+    }
 }

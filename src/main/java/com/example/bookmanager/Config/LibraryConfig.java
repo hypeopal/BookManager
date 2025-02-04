@@ -20,7 +20,7 @@ public class LibraryConfig {
 
     @PostConstruct
     public void init() {
-        configMapper.findConfig().forEach(config -> configMap.put(config.getKey(), config.getValue()));
+        configMapper.getConfig().forEach(config -> configMap.put(config.getKey(), config.getValue()));
     }
 
     public String getConfigValue(String key) {
@@ -38,5 +38,9 @@ public class LibraryConfig {
 
     public int getLoanMaxCount() {
         return Integer.parseInt(getConfigValue("loanMaxCount"));
+    }
+
+    public int getMaxRenewTimes() {
+        return Integer.parseInt(getConfigValue("maxRenewTimes"));
     }
 }
