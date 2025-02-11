@@ -3,6 +3,7 @@ package com.example.bookmanager.Service.impl;
 import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.Entity.User;
 import com.example.bookmanager.Mapper.UserMapper;
+import com.example.bookmanager.Service.RedisService;
 import com.example.bookmanager.Service.UserService;
 import com.example.bookmanager.Utils.BCryptUtil;
 import com.example.bookmanager.Utils.UserClaims;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+    private final RedisService redisService;
 
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, RedisService redisService) {
         this.userMapper = userMapper;
+        this.redisService = redisService;
     }
 
     @Override
@@ -34,7 +37,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.getUserByUsername(username);
         String passwordHash = userMapper.getPasswordHashByUsername(username);
         if (!BCryptUtil.checkPassword(password, passwordHash)) return null;
-        return new UserClaims(user.getId(), username, user.isStatus(), user.isAdmin());
+        redisService.setAdminStatus(user.getId(), user.isAdmin());
+        redisService.setUserStatus(user.getId(), user.isStatus());
+        return new UserClaims(user.getId(), username);
     }
 
     @LogRecord

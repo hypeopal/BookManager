@@ -12,10 +12,8 @@ import java.util.Map;
 public class UserClaims {
     private Long id;
     private String username;
-    private boolean status;
-    private boolean admin;
 
     Map<String, Object> toMap() {
-        return Map.of("id", id, "userName", username, "status", status, "admin", admin);
+        return Map.of("id", id, "userName", username);
     }
 }

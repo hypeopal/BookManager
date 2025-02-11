@@ -10,8 +10,6 @@ public class JwtTest {
     public void testGen() {
         UserClaims claims = new UserClaims();
         claims.setUsername("test");
-        claims.setStatus(true);
-        claims.setAdmin(false);
         String token = JWTUtil.generateToken(claims);
         System.out.println(token);
     }
