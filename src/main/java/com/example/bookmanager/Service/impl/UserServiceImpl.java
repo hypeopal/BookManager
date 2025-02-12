@@ -52,23 +52,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public void setAdmin(Long id) {
         userMapper.setAdmin(id);
+        redisService.setAdminStatus(id, true);
     }
 
     @LogRecord
     @Override
     public void unsetAdmin(Long id) {
         userMapper.unsetAdmin(id);
+        redisService.setAdminStatus(id, false);
     }
 
     @LogRecord
     @Override
     public void banUser(Long id) {
         userMapper.banUser(id);
+        redisService.setUserStatus(id, false);
     }
 
     @LogRecord
     @Override
     public void unbanUser(Long id) {
         userMapper.unbanUser(id);
+        redisService.setUserStatus(id, true);
     }
 }

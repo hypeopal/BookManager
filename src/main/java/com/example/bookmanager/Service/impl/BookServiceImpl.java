@@ -2,10 +2,7 @@ package com.example.bookmanager.Service.impl;
 
 import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.Config.LibraryConfig;
-import com.example.bookmanager.DTO.BookDTO;
-import com.example.bookmanager.DTO.AddBookRequest;
-import com.example.bookmanager.DTO.BookInfoRequest;
-import com.example.bookmanager.DTO.PageContent;
+import com.example.bookmanager.DTO.*;
 import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.BookInformationMapper;
@@ -123,13 +120,13 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void borrowBook(Long bookId) {
         Long userId = ThreadLocalUtil.get().getId();
-        if (redisService.getUserStatus(userId)) throw new BusinessException(5, 200, "User is banned");
+        if (!redisService.getUserStatus(userId)) throw new BusinessException(5, 200, "User is banned");
         if (borrowRecordMapper.countBorrow(userId) == libraryConfig.getLoanMaxCount())
             throw new BusinessException(5, 200, "User has borrowed too many books");
-        String status = booksMapper.getStatusById(bookId);
-        if (status == null) {
+        String bookStatus = booksMapper.getStatusById(bookId);
+        if (bookStatus == null) {
             throw new BusinessException(2, 200, "Book id not exists");
-        } else if (status.equals("AVAILABLE")) {
+        } else if (bookStatus.equals("AVAILABLE")) {
             booksMapper.updateStatusById(bookId, "BORROWED");
             LocalDateTime returnDate = LocalDateTime.now().plusDays(libraryConfig.getLoanDurationDays());
             borrowRecordMapper.insertRecord(userId, bookId, returnDate);
@@ -139,7 +136,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDTO> getBorrowedBooks() {
+    public List<BorrowedBook> getBorrowedBooks() {
         return borrowRecordMapper.getBorrowedBooks(ThreadLocalUtil.get().getId());
     }
 

@@ -113,7 +113,7 @@ public class UserController {
             return Result.success("Ban user successfully");
         } catch (BusinessException e) {
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new BusinessException(4, 400, "Failed to ban user: " + e.getMessage());
         }
     }
@@ -126,7 +126,7 @@ public class UserController {
             return Result.success("Unban user successfully");
         } catch (BusinessException e) {
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new BusinessException(4, 400, "Failed to unban user: " + e.getMessage());
         }
     }

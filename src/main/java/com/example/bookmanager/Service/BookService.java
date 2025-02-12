@@ -1,9 +1,6 @@
 package com.example.bookmanager.Service;
 
-import com.example.bookmanager.DTO.BookDTO;
-import com.example.bookmanager.DTO.AddBookRequest;
-import com.example.bookmanager.DTO.BookInfoRequest;
-import com.example.bookmanager.DTO.PageContent;
+import com.example.bookmanager.DTO.*;
 import com.example.bookmanager.Entity.BookInformation;
 
 import java.util.List;
@@ -17,6 +14,6 @@ public interface BookService {
     void addBookInfo(BookInfoRequest bookInfoRequest);
     void deleteBook(Long id);
     void borrowBook(Long id);
-    List<BookDTO> getBorrowedBooks();
+    List<BorrowedBook> getBorrowedBooks();
     void returnBook(Long id);
 }

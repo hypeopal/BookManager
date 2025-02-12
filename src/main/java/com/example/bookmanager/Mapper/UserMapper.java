@@ -31,4 +31,10 @@ public interface UserMapper {
 
     @Update("update users set status = true where id = #{id}")
     void unbanUser(Long id);
+
+    @Select("select status from users where id = #{userId}")
+    Boolean getUserStatus(Long userId);
+
+    @Select("select admin from users where id = #{userId}")
+    Boolean getAdminStatus(Long userId);
 }

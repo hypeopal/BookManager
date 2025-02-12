@@ -168,7 +168,9 @@
        book_id INTEGER NOT NULL
            CONSTRAINT borrow_book_id_fk REFERENCES books ON DELETE CASCADE,
        borrow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-       return_date TIMESTAMP NOT NULL
+       return_date TIMESTAMP NOT NULL,
+       renew_times INTEGER NOT NULL DEFAULT 0,
+       returned BOOLEAN NOT NULL DEFAULT false
    );
    ```
 

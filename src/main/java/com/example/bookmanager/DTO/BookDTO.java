@@ -1,6 +1,7 @@
 package com.example.bookmanager.DTO;
 
-import com.example.bookmanager.Type.*;
+import com.example.bookmanager.Type.BookCategory;
+import com.example.bookmanager.Type.BookStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,7 @@
 package com.example.bookmanager.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,9 @@ public class RedisService {
     }
 
     public Boolean getAdminStatus(Long userId) {
-        return (Boolean) redisTemplate.opsForValue().get(ADMIN_KEY_PREFIX + userId);
+        Boolean isAdmin = (Boolean) redisTemplate.opsForValue().get(ADMIN_KEY_PREFIX + userId);
+        if (isAdmin != null) return isAdmin;
+        else throw new DataRetrievalFailureException("Admin status not found");
     }
 
     public void setUserStatus(Long userId, boolean isBanned) {
@@ -32,6 +35,8 @@ public class RedisService {
     }
 
     public Boolean getUserStatus(Long userId) {
-        return (Boolean) redisTemplate.opsForValue().get(USER_STATUS_PREFIX + userId);
+        Boolean isBanned = (Boolean) redisTemplate.opsForValue().get(USER_STATUS_PREFIX + userId);
+        if (isBanned != null) return isBanned;
+        else throw new DataRetrievalFailureException("User status not found");
     }
 }
