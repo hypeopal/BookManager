@@ -55,6 +55,16 @@ public class UserController {
         throw new BusinessException(2, 400, "Invalid username or password");
     }
 
+    @RequireAdmin
+    @GetMapping
+    public Result getUserList() {
+        try {
+            return ResultData.success("Get user list successfully", userService.getUserList());
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to get user list: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/info")
     public Result getUserInfo() {
         UserClaims claims = ThreadLocalUtil.get();
@@ -64,8 +74,12 @@ public class UserController {
     @DeleteMapping
     public Result cancelUser() {
         UserClaims claims = ThreadLocalUtil.get();
-        userService.deleteUser(claims.getUsername());
-        return Result.success("Delete user successfully");
+        try {
+            userService.deleteUser(claims.getUsername());
+            return Result.success("Delete user successfully");
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to delete user: " + e.getMessage());
+        }
     }
 
     @RequireAdmin
@@ -80,7 +94,7 @@ public class UserController {
     }
 
     @RequireAdmin
-    @GetMapping("/setAdmin/{id}")
+    @PatchMapping("/setAdmin/{id}")
     public Result setAdmin(@PathVariable("id") Long id) {
         try {
             userService.setAdmin(id);
@@ -93,7 +107,7 @@ public class UserController {
     }
 
     @RequireAdmin
-    @GetMapping("/unsetAdmin/{id}")
+    @PatchMapping("/unsetAdmin/{id}")
     public Result unsetAdmin(@PathVariable("id") Long id) {
         try {
             userService.unsetAdmin(id);
@@ -106,7 +120,7 @@ public class UserController {
     }
 
     @RequireAdmin
-    @GetMapping("/ban/{id}")
+    @PatchMapping("/ban/{id}")
     public Result banUser(@PathVariable("id") Long id) {
         try {
             userService.banUser(id);
@@ -119,7 +133,7 @@ public class UserController {
     }
 
     @RequireAdmin
-    @GetMapping("/unban/{id}")
+    @PatchMapping("/unban/{id}")
     public Result unbanUser(@PathVariable("id") Long id) {
         try {
             userService.unbanUser(id);

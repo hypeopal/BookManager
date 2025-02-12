@@ -134,7 +134,7 @@ public class BookController {
         }
     }
 
-    @GetMapping("/borrow/{id}")
+    @PatchMapping("/borrow/{id}")
     public Result borrowBook(@PathVariable("id") Long id) {
         try {
             bookService.borrowBook(id);
@@ -155,7 +155,7 @@ public class BookController {
         }
     }
 
-    @GetMapping("/return/{id}")
+    @PatchMapping("/return/{id}")
     public Result returnBook(@PathVariable("id") Long id) {
         try {
             bookService.returnBook(id);

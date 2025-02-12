@@ -1,7 +1,10 @@
 package com.example.bookmanager.Mapper;
 
+import com.example.bookmanager.DTO.UserDTO;
 import com.example.bookmanager.Entity.User;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -37,4 +40,7 @@ public interface UserMapper {
 
     @Select("select admin from users where id = #{userId}")
     Boolean getAdminStatus(Long userId);
+
+    @Select("select id, username, created_at, status, admin from users")
+    List<UserDTO> getUserList();
 }

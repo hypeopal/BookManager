@@ -1,6 +1,7 @@
 package com.example.bookmanager.Service.impl;
 
 import com.example.bookmanager.Annotation.LogRecord;
+import com.example.bookmanager.DTO.UserDTO;
 import com.example.bookmanager.Entity.User;
 import com.example.bookmanager.Mapper.UserMapper;
 import com.example.bookmanager.Service.RedisService;
@@ -8,6 +9,8 @@ import com.example.bookmanager.Service.UserService;
 import com.example.bookmanager.Utils.BCryptUtil;
 import com.example.bookmanager.Utils.UserClaims;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -74,5 +77,10 @@ public class UserServiceImpl implements UserService {
     public void unbanUser(Long id) {
         userMapper.unbanUser(id);
         redisService.setUserStatus(id, true);
+    }
+
+    @Override
+    public List<UserDTO> getUserList() {
+        return userMapper.getUserList();
     }
 }
