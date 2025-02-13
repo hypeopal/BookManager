@@ -1,6 +1,7 @@
 package com.example.bookmanager.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,11 @@ public class RedisService {
     private static final String USER_STATUS_PREFIX = "user_status:";
 
     public void setAdminStatus(Long userId, boolean isAdmin) {
-        redisTemplate.opsForValue().set(ADMIN_KEY_PREFIX + userId, isAdmin, 1, TimeUnit.HOURS);
+        try {
+            redisTemplate.opsForValue().set(ADMIN_KEY_PREFIX + userId, isAdmin, 1, TimeUnit.HOURS);
+        } catch (DataAccessException e) {
+            System.out.println("Failed to set admin status: " + e.getMessage());
+        }
     }
 
     public Boolean getAdminStatus(Long userId) {
@@ -31,7 +36,11 @@ public class RedisService {
     }
 
     public void setUserStatus(Long userId, boolean isBanned) {
-        redisTemplate.opsForValue().set(USER_STATUS_PREFIX + userId, isBanned, 1, TimeUnit.HOURS);
+        try {
+            redisTemplate.opsForValue().set(USER_STATUS_PREFIX + userId, isBanned, 1, TimeUnit.HOURS);
+        } catch (DataAccessException e) {
+            System.out.println("Failed to set user status: " + e.getMessage());
+        }
     }
 
     public Boolean getUserStatus(Long userId) {

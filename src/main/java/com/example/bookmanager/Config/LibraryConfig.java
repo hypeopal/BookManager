@@ -43,4 +43,8 @@ public class LibraryConfig {
     public int getMaxRenewTimes() {
         return Integer.parseInt(getConfigValue("maxRenewTimes"));
     }
+
+    public int getRenewPriorDays() {
+        return Integer.parseInt(getConfigValue("renewPriorDays"));
+    }
 }

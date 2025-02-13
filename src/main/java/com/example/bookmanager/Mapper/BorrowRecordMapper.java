@@ -1,6 +1,7 @@
 package com.example.bookmanager.Mapper;
 
 import com.example.bookmanager.DTO.BorrowedBook;
+import com.example.bookmanager.Entity.BorrowRecord;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
@@ -28,9 +29,15 @@ public interface BorrowRecordMapper {
     @Select("select count(*) from borrow_records where book_id = #{bookId} and user_id = #{userId} and returned = false")
     int isBorrowedByUser(Long bookId, Long userId);
 
-    @Update("update borrow_records set return_date = #{returnDate} where book_id = #{bookId} and user_id = #{userId}")
+    @Update("update borrow_records set return_date = #{returnDate} where book_id = #{bookId} and user_id = #{userId} and returned = false")
     void setReturnDate(Long bookId, Long userId, LocalDateTime returnDate);
 
-    @Update("update borrow_records set returned = #{status} where book_id = #{bookId} and user_id = #{userId}")
+    @Update("update borrow_records set returned = #{status} where book_id = #{bookId} and user_id = #{userId} and returned = false")
     void setReturnStatus(Long bookId, Long userId, boolean status);
+
+    @Select("select * from borrow_records where user_id = #{userId} and returned = false and book_id = #{bookId}")
+    BorrowRecord getBorrowRecordByBookIdAndUserId(Long bookId, Long userId);
+
+    @Update("update borrow_records set renew_times = #{i} where book_id = #{bookId} and user_id = #{userId} and returned = false")
+    void setRenewTimes(Long bookId, Long userId, int i);
 }

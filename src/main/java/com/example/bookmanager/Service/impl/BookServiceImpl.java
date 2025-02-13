@@ -4,6 +4,7 @@ import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.Config.LibraryConfig;
 import com.example.bookmanager.DTO.*;
 import com.example.bookmanager.Entity.BookInformation;
+import com.example.bookmanager.Entity.BorrowRecord;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.BookInformationMapper;
 import com.example.bookmanager.Mapper.BooksMapper;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
@@ -53,7 +55,8 @@ public class BookServiceImpl implements BookService {
         if (status != null && status.trim().isEmpty()) status = null;
         if (category != null && category.trim().isEmpty()) category = null;
         if (page == null || count == null) {
-            page = null; count = null;
+            page = null;
+            count = null;
         }
         if (category != null) {
             try {
@@ -150,5 +153,24 @@ public class BookServiceImpl implements BookService {
             borrowRecordMapper.setReturnDate(id, userId, LocalDateTime.now());
             borrowRecordMapper.setReturnStatus(id, userId, true);
         } else throw new BusinessException(2, 200, "You didn't borrow this book");
+    }
+
+    @Override
+    @Transactional
+    @LogRecord
+    public void renewBorrowedBook(Long bookId) {
+        Long userId = ThreadLocalUtil.get().getId();
+        BorrowRecord record = borrowRecordMapper.getBorrowRecordByBookIdAndUserId(bookId, userId);
+        LocalDateTime now = LocalDateTime.now();
+        if (record == null) throw new BusinessException(2, 200, "You didn't borrow this book");
+        if (record.getReturnDate().isBefore(LocalDateTime.now()))
+            throw new BusinessException(2, 200, "The time to return the book has passed");
+        if (record.getRenewTimes() == libraryConfig.getMaxRenewTimes())
+            throw new BusinessException(2, 200, "You can't renew this book anymore");
+        if (ChronoUnit.DAYS.between(now, record.getReturnDate()) > libraryConfig.getRenewPriorDays())
+            throw new BusinessException(2, 200, "Renewals can only be made " + libraryConfig.getRenewPriorDays() + " five days prior to the return date");
+        LocalDateTime returnDate = record.getReturnDate().plusDays(libraryConfig.getLoanDurationDays());
+        borrowRecordMapper.setReturnDate(bookId, userId, returnDate);
+        borrowRecordMapper.setRenewTimes(bookId, userId, record.getRenewTimes() + 1);
     }
 }

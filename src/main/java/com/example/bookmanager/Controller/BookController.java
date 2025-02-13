@@ -166,4 +166,16 @@ public class BookController {
             throw new BusinessException(4, 400, "Failed to return book: " + e.getMessage());
         }
     }
+
+    @PatchMapping("/renew/{id}")
+    public Result renewBorrowedBook(@PathVariable("id") Long id) {
+        try {
+            bookService.renewBorrowedBook(id);
+            return Result.success("Renew borrowed book successfully");
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to renew borrowed book: " + e.getMessage());
+        }
+    }
 }
