@@ -19,4 +19,5 @@ public interface BookService {
     void renewBorrowedBook(Long bookId);
     void reserveBook(Long bookId);
     void cancelReserve(Long bookId);
+    List<ReservedBook> getReservedBooks();
 }

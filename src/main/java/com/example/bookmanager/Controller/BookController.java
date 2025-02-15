@@ -202,4 +202,13 @@ public class BookController {
             throw new BusinessException(4, 400, "Failed to cancel reserve: " + e.getMessage());
         }
     }
+
+    @GetMapping("/reserved")
+    public Result getReservedBook() {
+        try {
+            return ResultData.success("Get reserved books successfully", bookService.getReservedBooks());
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to get reserved books: " + e.getMessage());
+        }
+    }
 }

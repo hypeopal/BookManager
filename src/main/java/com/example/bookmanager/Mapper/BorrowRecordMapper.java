@@ -9,15 +9,12 @@ import java.util.List;
 
 @Mapper
 public interface BorrowRecordMapper {
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name, bi.category, br.borrow_date, br.return_date, br.renew_times, br.returned " +
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name as library, bi.category, br.borrow_date, br.return_date, br.renew_times, br.returned " +
             "from borrow_records br " +
             "join books b on b.id = br.book_id " +
             "join book_information bi on b.isbn = bi.isbn " +
             "join libraries l on l.id = b.library " +
             "where br.user_id = #{id}")
-    @Results({
-            @Result(property = "library", column = "name")
-    })
     List<BorrowedBook> getBorrowedBooks(Long id);
 
     @Insert("insert into borrow_records (user_id, book_id, return_date) values (#{userId}, #{bookId}, #{returnDate})")

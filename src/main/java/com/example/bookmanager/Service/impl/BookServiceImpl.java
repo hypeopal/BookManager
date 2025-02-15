@@ -5,6 +5,7 @@ import com.example.bookmanager.Config.LibraryConfig;
 import com.example.bookmanager.DTO.*;
 import com.example.bookmanager.Entity.BookInformation;
 import com.example.bookmanager.Entity.BorrowRecord;
+import com.example.bookmanager.Entity.ReserveRecord;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.BookInformationMapper;
 import com.example.bookmanager.Mapper.BooksMapper;
@@ -230,10 +231,17 @@ public class BookServiceImpl implements BookService {
     @LogRecord
     public void cancelReserve(Long bookId) {
         Long userId = ThreadLocalUtil.get().getId();
-        Long reserveId = reserveRecordMapper.getReserveIdByBookIdAndUserId(bookId, userId);
+        ReserveRecord record = reserveRecordMapper.getReserveRecordByUserIdAndBookId(userId, bookId);
 
-        if (reserveId == null) throw new BusinessException(2, 200, "You didn't reserve this book");
-        reserveRecordMapper.setStatus(reserveId, "CANCELED");
+        if (record == null) throw new BusinessException(2, 200, "You didn't reserve this book");
+        if (ChronoUnit.HOURS.between(record.getReserveDate(), LocalDateTime.now()) < libraryConfig.getReserveCancelHours())
+            throw new BusinessException(6, 200, "Reservations cannot be cancelled up to " + libraryConfig.getReserveCancelHours() + " hours after the reservation is made");
+        reserveRecordMapper.setStatus(record.getId(), "CANCELED");
         booksMapper.updateStatusById(bookId, "AVAILABLE");
+    }
+
+    @Override
+    public List<ReservedBook> getReservedBooks() {
+        return reserveRecordMapper.getReservedBookByUserId(ThreadLocalUtil.get().getId());
     }
 }

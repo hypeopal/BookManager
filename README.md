@@ -236,6 +236,7 @@
   | 3                      | parameter format error  |
   | 4                      | unspecified error       |
   | 5                      | insufficient permission |
+  | 6                      | illegal operation       |
 1. Login
    
    > Path: /api/user/login

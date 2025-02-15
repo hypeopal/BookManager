@@ -51,4 +51,8 @@ public class LibraryConfig {
     public int getMaxReserveCount() {
         return Integer.parseInt(getConfigValue("maxReserveCount"));
     }
+
+    public int getReserveCancelHours() {
+        return Integer.parseInt(getConfigValue("reserveCancelHours"));
+    }
 }
