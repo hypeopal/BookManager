@@ -170,9 +170,38 @@
        borrow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
        return_date TIMESTAMP NOT NULL,
        renew_times INTEGER NOT NULL DEFAULT 0,
-       returned BOOLEAN NOT NULL DEFAULT false
+       returned BOOLEAN NOT NULL DEFAULT false,
+       reserve_id INTEGER
+           CONSTRAINT borrow_records_reserve_records_id_fk
+           REFERENCES reserve_records
+           ON DELETE SET NULL
    );
    ```
+
+9. Reserve_status(ENUM)
+   
+   ```sql
+   CREATE TYPE reserve_status AS ENUM (
+       'RESERVED',
+       'CANCELED',
+       'BORROWED',
+       'RETURNED'
+   );
+   ```
+
+10. Reserve_record
+    
+    ```sql
+    CREATE TABLE reserve_records (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL
+            CONSTRAINT reserve_records_user_id REFERENCES users ON DELETE CASCADE,
+        book_id INTEGER NOT NULL
+            CONSTRAINT reserve_records_book_id REFERENCES books ON DELETE CASCADE,
+        reserve_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        status reserve_status NOT NULL DEFAULT 'RESERVED'::reserve_status
+    );
+    ```
 
 ## Design of API
 

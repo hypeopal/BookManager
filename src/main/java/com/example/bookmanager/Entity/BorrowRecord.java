@@ -12,4 +12,5 @@ public class BorrowRecord {
     private LocalDateTime returnDate;
     private int renewTimes;
     private boolean returned;
+    private Long reserveId;
 }

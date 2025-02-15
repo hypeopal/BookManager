@@ -47,4 +47,8 @@ public class LibraryConfig {
     public int getRenewPriorDays() {
         return Integer.parseInt(getConfigValue("renewPriorDays"));
     }
+
+    public int getMaxReserveCount() {
+        return Integer.parseInt(getConfigValue("maxReserveCount"));
+    }
 }

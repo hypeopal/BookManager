@@ -178,4 +178,28 @@ public class BookController {
             throw new BusinessException(4, 400, "Failed to renew borrowed book: " + e.getMessage());
         }
     }
+
+    @PostMapping("/reserve/{id}")
+    public Result reserveBook(@PathVariable("id") Long id) {
+        try {
+            bookService.reserveBook(id);
+            return Result.success("Reserve book successfully");
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to reserve book: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/cancelReserve/{id}")
+    public Result cancelReserve(@PathVariable("id") Long id) {
+        try {
+            bookService.cancelReserve(id);
+            return Result.success("Cancel reserve successfully");
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to cancel reserve: " + e.getMessage());
+        }
+    }
 }

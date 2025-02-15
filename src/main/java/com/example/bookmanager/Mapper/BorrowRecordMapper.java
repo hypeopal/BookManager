@@ -26,8 +26,8 @@ public interface BorrowRecordMapper {
     @Select("select count(*) from borrow_records where user_id = #{userId} and returned = false")
     int countBorrow(Long userId);
 
-    @Select("select count(*) from borrow_records where book_id = #{bookId} and user_id = #{userId} and returned = false")
-    int isBorrowedByUser(Long bookId, Long userId);
+    @Insert("insert into borrow_records (user_id, book_id, return_date, reserve_id) values (#{userId}, #{bookId}, #{returnDate}, #{reserveId})")
+    void insertRecordWithReserve(Long userId, Long bookId, LocalDateTime returnDate, Long reserveId);
 
     @Update("update borrow_records set return_date = #{returnDate} where book_id = #{bookId} and user_id = #{userId} and returned = false")
     void setReturnDate(Long bookId, Long userId, LocalDateTime returnDate);

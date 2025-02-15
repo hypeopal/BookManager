@@ -9,6 +9,7 @@ import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.BookInformationMapper;
 import com.example.bookmanager.Mapper.BooksMapper;
 import com.example.bookmanager.Mapper.BorrowRecordMapper;
+import com.example.bookmanager.Mapper.ReserveRecordMapper;
 import com.example.bookmanager.Service.BookService;
 import com.example.bookmanager.Service.RedisService;
 import com.example.bookmanager.Type.BookCategory;
@@ -29,15 +30,44 @@ public class BookServiceImpl implements BookService {
     private final BookInformationMapper bookInformationMapper;
     private final BooksMapper booksMapper;
     private final BorrowRecordMapper borrowRecordMapper;
+    private final ReserveRecordMapper reserveRecordMapper;
     private final LibraryConfig libraryConfig;
     private final RedisService redisService;
 
-    public BookServiceImpl(BookInformationMapper bookInformationMapper, BooksMapper booksMapper, BorrowRecordMapper borrowRecordMapper, LibraryConfig libraryConfig, RedisService redisService) {
+    public BookServiceImpl(BookInformationMapper bookInformationMapper, BooksMapper booksMapper, BorrowRecordMapper borrowRecordMapper, ReserveRecordMapper reserveRecordMapper, LibraryConfig libraryConfig, RedisService redisService) {
         this.bookInformationMapper = bookInformationMapper;
         this.booksMapper = booksMapper;
         this.borrowRecordMapper = borrowRecordMapper;
+        this.reserveRecordMapper = reserveRecordMapper;
         this.libraryConfig = libraryConfig;
         this.redisService = redisService;
+    }
+
+    private void validateUserStatus(Long userId) {
+        if (!redisService.getUserStatus(userId)) {
+            throw new BusinessException(1, 400, "User is banned");
+        }
+    }
+
+    private void validateBorrowLimit(Long userId) {
+        if (borrowRecordMapper.countBorrow(userId) == libraryConfig.getLoanMaxCount()) {
+            throw new BusinessException(5, 200, "User has borrowed too many books");
+        }
+    }
+
+    private void validateReserveLimit(Long userId) {
+        if (reserveRecordMapper.countReserve(userId) == libraryConfig.getMaxReserveCount()) {
+            throw new BusinessException(5, 200, "User has reserved too many books");
+        }
+    }
+
+    private void validateBookAvailability(String bookStatus) {
+        if (bookStatus == null) {
+            throw new BusinessException(2, 200, "Book id not exists");
+        }
+        if (!bookStatus.equals("AVAILABLE")) {
+            throw new BusinessException(2, 200, "Book not available");
+        }
     }
 
     @Override
@@ -123,19 +153,20 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void borrowBook(Long bookId) {
         Long userId = ThreadLocalUtil.get().getId();
-        if (!redisService.getUserStatus(userId)) throw new BusinessException(5, 200, "User is banned");
-        if (borrowRecordMapper.countBorrow(userId) == libraryConfig.getLoanMaxCount())
-            throw new BusinessException(5, 200, "User has borrowed too many books");
-        String bookStatus = booksMapper.getStatusById(bookId);
-        if (bookStatus == null) {
-            throw new BusinessException(2, 200, "Book id not exists");
-        } else if (bookStatus.equals("AVAILABLE")) {
-            booksMapper.updateStatusById(bookId, "BORROWED");
-            LocalDateTime returnDate = LocalDateTime.now().plusDays(libraryConfig.getLoanDurationDays());
-            borrowRecordMapper.insertRecord(userId, bookId, returnDate);
-        } else {
-            throw new BusinessException(2, 200, "Book not available");
+        validateUserStatus(userId);
+        validateBorrowLimit(userId);
+
+        Long reserveId = reserveRecordMapper.getReserveIdByBookIdAndUserId(bookId, userId);
+        if (reserveId == null) {
+            String bookStatus = booksMapper.getStatusById(bookId);
+            validateBookAvailability(bookStatus);
         }
+        booksMapper.updateStatusById(bookId, "BORROWED");
+        LocalDateTime returnDate = LocalDateTime.now().plusDays(libraryConfig.getLoanDurationDays());
+        if (reserveId != null) {
+            borrowRecordMapper.insertRecordWithReserve(userId, bookId, returnDate, reserveId);
+            reserveRecordMapper.setStatus(reserveId, "BORROWED");
+        } else borrowRecordMapper.insertRecord(userId, bookId, returnDate);
     }
 
     @Override
@@ -146,12 +177,16 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     @LogRecord
-    public void returnBook(Long id) {
+    public void returnBook(Long bookId) {
         Long userId = ThreadLocalUtil.get().getId();
-        if (borrowRecordMapper.isBorrowedByUser(id, userId) == 1) {
-            booksMapper.updateStatusById(id, "AVAILABLE");
-            borrowRecordMapper.setReturnDate(id, userId, LocalDateTime.now());
-            borrowRecordMapper.setReturnStatus(id, userId, true);
+        BorrowRecord record = borrowRecordMapper.getBorrowRecordByBookIdAndUserId(bookId, userId);
+        if (record != null) {
+            booksMapper.updateStatusById(bookId, "AVAILABLE");
+            borrowRecordMapper.setReturnDate(bookId, userId, LocalDateTime.now());
+            borrowRecordMapper.setReturnStatus(bookId, userId, true);
+            if (record.getReserveId() != null) {
+                reserveRecordMapper.setStatus(record.getReserveId(), "RETURNED");
+            }
         } else throw new BusinessException(2, 200, "You didn't borrow this book");
     }
 
@@ -163,7 +198,7 @@ public class BookServiceImpl implements BookService {
         BorrowRecord record = borrowRecordMapper.getBorrowRecordByBookIdAndUserId(bookId, userId);
         LocalDateTime now = LocalDateTime.now();
         if (record == null) throw new BusinessException(2, 200, "You didn't borrow this book");
-        if (record.getReturnDate().isBefore(LocalDateTime.now()))
+        if (record.getReturnDate().isBefore(now))
             throw new BusinessException(2, 200, "The time to return the book has passed");
         if (record.getRenewTimes() == libraryConfig.getMaxRenewTimes())
             throw new BusinessException(2, 200, "You can't renew this book anymore");
@@ -172,5 +207,33 @@ public class BookServiceImpl implements BookService {
         LocalDateTime returnDate = record.getReturnDate().plusDays(libraryConfig.getLoanDurationDays());
         borrowRecordMapper.setReturnDate(bookId, userId, returnDate);
         borrowRecordMapper.setRenewTimes(bookId, userId, record.getRenewTimes() + 1);
+    }
+
+    @Override
+    @Transactional
+    @LogRecord
+    public void reserveBook(Long bookId) {
+        Long userId = ThreadLocalUtil.get().getId();
+        validateUserStatus(userId);
+        validateBorrowLimit(userId);
+        validateReserveLimit(userId);
+
+        String bookStatus = booksMapper.getStatusById(bookId);
+        validateBookAvailability(bookStatus);
+
+        booksMapper.updateStatusById(bookId, "RESERVED");
+        reserveRecordMapper.insertRecord(userId, bookId);
+    }
+
+    @Override
+    @Transactional
+    @LogRecord
+    public void cancelReserve(Long bookId) {
+        Long userId = ThreadLocalUtil.get().getId();
+        Long reserveId = reserveRecordMapper.getReserveIdByBookIdAndUserId(bookId, userId);
+
+        if (reserveId == null) throw new BusinessException(2, 200, "You didn't reserve this book");
+        reserveRecordMapper.setStatus(reserveId, "CANCELED");
+        booksMapper.updateStatusById(bookId, "AVAILABLE");
     }
 }
