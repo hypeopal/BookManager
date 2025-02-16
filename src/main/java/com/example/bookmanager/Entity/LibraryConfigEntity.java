@@ -7,4 +7,5 @@ public class LibraryConfigEntity {
     private Long id;
     private String key;
     private String value;
+    private String description;
 }

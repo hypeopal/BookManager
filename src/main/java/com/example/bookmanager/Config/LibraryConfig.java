@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Getter
 public class LibraryConfig {
-    @Getter
     private final Map<String, String> configMap = new HashMap<>();
     private final LibraryConfigMapper configMapper;
 

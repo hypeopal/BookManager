@@ -15,6 +15,7 @@ public class ConfigController {
         this.libraryConfigService = libraryConfigService;
     }
 
+    @RequireAdmin
     @GetMapping
     public Result getConfig() {
         try {

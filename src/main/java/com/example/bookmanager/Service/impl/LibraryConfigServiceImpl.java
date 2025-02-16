@@ -2,10 +2,11 @@ package com.example.bookmanager.Service.impl;
 
 import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.Config.LibraryConfig;
+import com.example.bookmanager.Entity.LibraryConfigEntity;
 import com.example.bookmanager.Service.LibraryConfigService;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class LibraryConfigServiceImpl implements LibraryConfigService {
@@ -16,8 +17,8 @@ public class LibraryConfigServiceImpl implements LibraryConfigService {
     }
 
     @Override
-    public Map<String, String> getConfig() {
-        return libraryConfig.getConfigMap();
+    public List<LibraryConfigEntity> getConfig() {
+        return libraryConfig.getConfigMapper().getConfig();
     }
 
     @LogRecord

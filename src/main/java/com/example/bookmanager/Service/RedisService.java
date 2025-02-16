@@ -35,9 +35,9 @@ public class RedisService {
         else throw new DataRetrievalFailureException("Admin status not found");
     }
 
-    public void setUserStatus(Long userId, boolean isBanned) {
+    public void setUserStatus(Long userId, boolean status) {
         try {
-            redisTemplate.opsForValue().set(USER_STATUS_PREFIX + userId, isBanned, 1, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set(USER_STATUS_PREFIX + userId, status, 1, TimeUnit.HOURS);
         } catch (DataAccessException e) {
             System.out.println("Failed to set user status: " + e.getMessage());
         }
