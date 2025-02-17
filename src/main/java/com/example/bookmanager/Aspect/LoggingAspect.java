@@ -26,7 +26,7 @@ public class LoggingAspect {
         } else logger.info("{}: Entering method: {} with arguments: {} (operated by user: {})", className, methodName, args, claims.getUsername());
         try {
             Object result = joinPoint.proceed();
-            if (result != null)
+            if (result != null && !methodName.equals("login"))
                 logger.info("{}: Exiting method: {} with result: {}", className, methodName, result);
             return result;
         } catch (Exception e) {

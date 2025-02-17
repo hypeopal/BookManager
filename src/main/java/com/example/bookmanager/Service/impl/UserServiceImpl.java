@@ -3,14 +3,17 @@ package com.example.bookmanager.Service.impl;
 import com.example.bookmanager.Annotation.LogRecord;
 import com.example.bookmanager.DTO.UserDTO;
 import com.example.bookmanager.Entity.User;
+import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Mapper.UserMapper;
 import com.example.bookmanager.Service.RedisService;
 import com.example.bookmanager.Service.UserService;
 import com.example.bookmanager.Utils.BCryptUtil;
+import com.example.bookmanager.Utils.JWTUtil;
 import com.example.bookmanager.Utils.UserClaims;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,13 +39,24 @@ public class UserServiceImpl implements UserService {
 
     @LogRecord
     @Override
-    public UserClaims validateLogin(String username, String password) {
-        User user = userMapper.getUserByUsername(username);
-        String passwordHash = userMapper.getPasswordHashByUsername(username);
-        if (!BCryptUtil.checkPassword(password, passwordHash)) return null;
-        redisService.setAdminStatus(user.getId(), user.isAdmin());
-        redisService.setUserStatus(user.getId(), user.isStatus());
-        return new UserClaims(user.getId(), username);
+    public Map<String, String> login(String username, String password) {
+        if (isUsernameExists(username)) {
+            User user = userMapper.getUserByUsername(username);
+            String passwordHash = userMapper.getPasswordHashByUsername(username);
+            if (BCryptUtil.checkPassword(password, passwordHash)) {
+                redisService.setAdminStatus(user.getId(), user.isAdmin());
+                redisService.setUserStatus(user.getId(), user.isStatus());
+                UserClaims claims = new UserClaims(user.getId(), username);
+
+                String token = JWTUtil.generateToken(claims);
+                Map<String, String> map = new java.util.HashMap<>(Map.of("token", token));
+                if (!user.isStatus()) {
+                    map.put("warning", "Your account has been banned");
+                }
+                return map;
+            }
+        }
+        throw new BusinessException(2, 400, "Invalid username or password");
     }
 
     @LogRecord

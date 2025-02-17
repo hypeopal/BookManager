@@ -34,9 +34,10 @@ public class BookController {
     public Result getAllBooks(@RequestParam(required = false) String status,
                               @RequestParam(required = false) Integer page,
                               @RequestParam(required = false) Integer count,
-                              @RequestParam(required = false) String category) {
+                              @RequestParam(required = false) String category,
+                              @RequestParam(required = false) String library) {
         try {
-            PageContent<BookDTO> list = bookService.findAllBooks(status, page, count, category);
+            PageContent<BookDTO> list = bookService.findAllBooks(status, page, count, category, library);
             return ResultData.success("Get list of books successfully", list);
         } catch (BusinessException e) {
             throw e;

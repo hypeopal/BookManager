@@ -4,12 +4,13 @@ import com.example.bookmanager.Annotation.RequireAdmin;
 import com.example.bookmanager.DTO.UserRequest;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.UserService;
-import com.example.bookmanager.Utils.*;
+import com.example.bookmanager.Utils.Result;
+import com.example.bookmanager.Utils.ResultData;
+import com.example.bookmanager.Utils.ThreadLocalUtil;
+import com.example.bookmanager.Utils.UserClaims;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -44,15 +45,11 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
         }
-        if (userService.isUsernameExists(userRequest.getUsername())) {
-            UserClaims claims = userService.validateLogin(userRequest.getUsername(), userRequest.getPassword());
-            if (claims != null) {
-                String token = JWTUtil.generateToken(claims);
-                Map<String, String> map = Map.of("token", token);
-                return ResultData.success("Login successfully", map);
-            }
+        try {
+            return ResultData.success("Login successfully", userService.login(userRequest.getUsername(), userRequest.getPassword()));
+        } catch (Exception e) {
+            throw new BusinessException(2, 400, "Invalid username or password");
         }
-        throw new BusinessException(2, 400, "Invalid username or password");
     }
 
     @RequireAdmin
@@ -67,8 +64,7 @@ public class UserController {
 
     @GetMapping("/info")
     public Result getUserInfo() {
-        UserClaims claims = ThreadLocalUtil.get();
-        return Result.success(claims.getUsername() + " info");
+        return Result.success("info");
     }
 
     @DeleteMapping

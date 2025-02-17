@@ -14,6 +14,7 @@ import com.example.bookmanager.Mapper.ReserveRecordMapper;
 import com.example.bookmanager.Service.BookService;
 import com.example.bookmanager.Service.RedisService;
 import com.example.bookmanager.Type.BookCategory;
+import com.example.bookmanager.Type.BookStatus;
 import com.example.bookmanager.Utils.ThreadLocalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -82,12 +83,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public PageContent<BookDTO> findAllBooks(String status, Integer page, Integer count, String category) {
-        if (status != null && status.trim().isEmpty()) status = null;
+    public PageContent<BookDTO> findAllBooks(String status, Integer page, Integer count, String category, String library) {
         if (category != null && category.trim().isEmpty()) category = null;
+        if (library != null && library.trim().isEmpty()) library = null;
         if (page == null || count == null) {
             page = null;
             count = null;
+        }
+        if (status != null && status.trim().isEmpty()) {
+            try {
+                BookStatus.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                throw new BusinessException(2, 400, "Book status not exists");
+            }
         }
         if (category != null) {
             try {
@@ -98,7 +106,7 @@ public class BookServiceImpl implements BookService {
         }
         PageContent<BookDTO> pc = new PageContent<>();
         if (page != null) PageHelper.startPage(page, count);
-        List<BookDTO> list = bookInformationMapper.findAllBooks(status, category);
+        List<BookDTO> list = bookInformationMapper.findAllBooks(status, category, library);
         if (page != null) {
             Page<BookDTO> pageList = (Page<BookDTO>) list;
             pc.setCount((int) pageList.getTotal());
@@ -163,7 +171,8 @@ public class BookServiceImpl implements BookService {
             validateBookAvailability(bookStatus);
         }
         booksMapper.updateStatusById(bookId, "BORROWED");
-        LocalDateTime returnDate = LocalDateTime.now().plusDays(libraryConfig.getLoanDurationDays());
+        LocalDateTime returnDate = LocalDateTime.now().plusDays(libraryConfig.getLoanDurationDays())
+                .withHour(23).withMinute(59).withSecond(59);
         if (reserveId != null) {
             borrowRecordMapper.insertRecordWithReserve(userId, bookId, returnDate, reserveId);
             reserveRecordMapper.setStatus(reserveId, "BORROWED");

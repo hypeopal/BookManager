@@ -9,7 +9,7 @@ import java.util.List;
 public interface BookService {
     BookInformation findByTitle(String title);
     BookDTO findById(Long id);
-    PageContent<BookDTO> findAllBooks(String status, Integer page, Integer count, String category);
+    PageContent<BookDTO> findAllBooks(String status, Integer page, Integer count, String category, String library);
     void addBooks(AddBookRequest addBookRequest);
     void addBookInfo(BookInfoRequest bookInfoRequest);
     void deleteBook(Long id);

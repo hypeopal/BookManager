@@ -18,6 +18,9 @@
             <if test="category != null">
                 bi.category = #{category}::book_category
             </if>
+            <if test="library != null">
+                l.name = #{library}
+            </if>
         </where>
     </select>
     <select id="findById" resultMap="BookDTOMap" resultType="com.example.bookmanager.DTO.BookDTO">
