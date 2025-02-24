@@ -12,4 +12,5 @@ public class ReserveRecord {
     private Long bookId;
     private LocalDateTime reserveDate;
     private ReserveStatus status;
+    private LocalDateTime borrowDate;
 }

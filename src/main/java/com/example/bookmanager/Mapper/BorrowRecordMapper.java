@@ -38,6 +38,7 @@ public interface BorrowRecordMapper {
     @Update("update borrow_records set renew_times = #{i} where book_id = #{bookId} and user_id = #{userId} and returned = false")
     void setRenewTimes(Long bookId, Long userId, int i);
 
-    @Select("select distinct user_id from borrow_records where return_date < now() and returned = false")
+    @Select("select distinct user_id from borrow_records br join users u on br.user_id = u.id " +
+            "where return_date < now() and returned = false and u.status = true")
     List<Long> getOverdueUserId();
 }

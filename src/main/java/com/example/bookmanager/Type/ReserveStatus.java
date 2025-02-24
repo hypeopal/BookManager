@@ -4,5 +4,6 @@ public enum ReserveStatus {
     RESERVED,
     CANCELED,
     BORROWED,
-    RETURNED
+    RETURNED,
+    OVERDUE
 }

@@ -176,6 +176,7 @@ public class BookServiceImpl implements BookService {
         if (reserveId != null) {
             borrowRecordMapper.insertRecordWithReserve(userId, bookId, returnDate, reserveId);
             reserveRecordMapper.setStatus(reserveId, "BORROWED");
+            reserveRecordMapper.setBorrowDate(reserveId, LocalDateTime.now());
         } else borrowRecordMapper.insertRecord(userId, bookId, returnDate);
     }
 
@@ -231,8 +232,10 @@ public class BookServiceImpl implements BookService {
         String bookStatus = booksMapper.getStatusById(bookId);
         validateBookAvailability(bookStatus);
 
+        LocalDateTime borrowDate = LocalDateTime.now().plusDays(libraryConfig.getBorrowAfterRenew())
+                .withHour(23).withMinute(59).withSecond(59);
         booksMapper.updateStatusById(bookId, "RESERVED");
-        reserveRecordMapper.insertRecord(userId, bookId);
+        reserveRecordMapper.insertRecord(userId, bookId, borrowDate);
     }
 
     @Override
@@ -246,6 +249,7 @@ public class BookServiceImpl implements BookService {
         if (ChronoUnit.HOURS.between(record.getReserveDate(), LocalDateTime.now()) < libraryConfig.getReserveCancelHours())
             throw new BusinessException(6, 200, "Reservations cannot be cancelled up to " + libraryConfig.getReserveCancelHours() + " hours after the reservation is made");
         reserveRecordMapper.setStatus(record.getId(), "CANCELED");
+        reserveRecordMapper.setBorrowDate(record.getId(), null);
         booksMapper.updateStatusById(bookId, "AVAILABLE");
     }
 

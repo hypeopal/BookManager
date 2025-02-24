@@ -55,4 +55,8 @@ public class LibraryConfig {
     public int getReserveCancelHours() {
         return Integer.parseInt(getConfigValue("reserveCancelHours"));
     }
+
+    public int getBorrowAfterRenew() {
+        return Integer.parseInt(getConfigValue("borrowAfterRenew"));
+    }
 }

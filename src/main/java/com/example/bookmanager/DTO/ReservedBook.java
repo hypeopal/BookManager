@@ -12,13 +12,15 @@ import java.time.LocalDateTime;
 @Data
 public class ReservedBook extends BookDTO {
     private LocalDateTime reserveDate;
+    private LocalDateTime borrowDate;
     private ReserveStatus reserveStatus;
 
     public ReservedBook(Long id, String isbn, String title, String author, String publisher,
                         BookStatus status, String library, BookCategory category,
-                        LocalDateTime reserveDate, ReserveStatus reserveStatus) {
+                        LocalDateTime reserveDate, LocalDateTime borrowDate, ReserveStatus reserveStatus) {
         super(id, isbn, title, author, publisher, status, library, category);
         this.reserveDate = reserveDate;
         this.reserveStatus = reserveStatus;
+        this.borrowDate = borrowDate;
     }
 }
