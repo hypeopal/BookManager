@@ -4,6 +4,7 @@ import com.example.bookmanager.Mapper.BorrowRecordMapper;
 import com.example.bookmanager.Mapper.ReserveRecordMapper;
 import com.example.bookmanager.Mapper.UserMapper;
 import com.example.bookmanager.Service.RedisService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ public class OverdueChecker {
     private final UserMapper userMapper;
     private final RedisService redisService;
 
+    @Autowired
     public OverdueChecker(BorrowRecordMapper borrowRecordMapper, ReserveRecordMapper reserveRecordMapper, UserMapper userMapper, RedisService redisService) {
         this.borrowRecordMapper = borrowRecordMapper;
         this.reserveRecordMapper = reserveRecordMapper;

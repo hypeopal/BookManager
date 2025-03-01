@@ -22,5 +22,6 @@ public enum BookCategory {
     交通运输,
     航空航天,
     计算机科学,
-    环境科学
+    环境科学,
+    工具书
 }

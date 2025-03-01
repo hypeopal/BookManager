@@ -127,12 +127,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void addBooks(AddBookRequest addBookRequest) {
         if (bookInformationMapper.existsByIsbn(addBookRequest.getIsbn()) == 0) {
-            BookInformation bookInformation = new BookInformation();
-            bookInformation.setIsbn(addBookRequest.getIsbn());
-            bookInformation.setTitle(addBookRequest.getTitle());
-            bookInformation.setAuthor(addBookRequest.getAuthor());
-            bookInformation.setPublisher(addBookRequest.getPublisher());
-            bookInformationMapper.insertBookInformation(bookInformation);
+            addBookInfo(addBookRequest);
         } else {
             BookInformation information = bookInformationMapper.findByIsbn(addBookRequest.getIsbn());
             if (!information.getTitle().equals(addBookRequest.getTitle()) ||

@@ -5,7 +5,6 @@ import com.example.bookmanager.Service.RedisService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -23,7 +22,7 @@ public class RedisFailureAspect {
     public Object handleRedisException(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             return joinPoint.proceed();
-        } catch (DataRetrievalFailureException e) {
+        } catch (Exception e) {
             return fallback(joinPoint);
         }
     }

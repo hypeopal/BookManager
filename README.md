@@ -199,6 +199,7 @@
         book_id INTEGER NOT NULL
             CONSTRAINT reserve_records_book_id REFERENCES books ON DELETE CASCADE,
         reserve_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        borrow_date TIMESTAMP,
         status reserve_status NOT NULL DEFAULT 'RESERVED'::reserve_status
     );
     ```
