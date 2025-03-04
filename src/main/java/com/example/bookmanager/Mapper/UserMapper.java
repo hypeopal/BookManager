@@ -4,6 +4,7 @@ import com.example.bookmanager.DTO.UserDTO;
 import com.example.bookmanager.Entity.User;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -43,4 +44,10 @@ public interface UserMapper {
 
     @Select("select id, username, created_at, status, admin from users")
     List<UserDTO> getUserList();
+
+    @Update("update users set password = #{password} where username = #{username}")
+    void updatePassword(String username, String password);
+
+    @Update("update users set last_update = #{time} where username = #{username}")
+    void updateLastUpdate(String username, LocalDateTime time);
 }

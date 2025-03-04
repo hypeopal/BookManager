@@ -1,6 +1,8 @@
 package com.example.bookmanager.Service.impl;
 
 import com.example.bookmanager.Annotation.LogRecord;
+import com.example.bookmanager.Config.LibraryConfig;
+import com.example.bookmanager.DTO.ChangePassword;
 import com.example.bookmanager.DTO.UserDTO;
 import com.example.bookmanager.Entity.User;
 import com.example.bookmanager.Exception.BusinessException;
@@ -11,7 +13,10 @@ import com.example.bookmanager.Utils.BCryptUtil;
 import com.example.bookmanager.Utils.JWTUtil;
 import com.example.bookmanager.Utils.UserClaims;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +25,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final RedisService redisService;
+    private final LibraryConfig libraryConfig;
 
-    public UserServiceImpl(UserMapper userMapper, RedisService redisService) {
+    public UserServiceImpl(UserMapper userMapper, RedisService redisService, LibraryConfig libraryConfig) {
         this.userMapper = userMapper;
         this.redisService = redisService;
+        this.libraryConfig = libraryConfig;
     }
 
     @Override
@@ -57,6 +64,22 @@ public class UserServiceImpl implements UserService {
             }
         }
         throw new BusinessException(2, 400, "Invalid username or password");
+    }
+
+    @LogRecord
+    @Override
+    @Transactional
+    public void changePassword(ChangePassword userRequest) {
+        User user = userMapper.getUserByUsername(userRequest.getUsername());
+        if (user == null) throw new BusinessException(2, 400, "User not found");
+        if (ChronoUnit.DAYS.between(user.getLastUpdate(), LocalDateTime.now()) < libraryConfig.getChangePassDuration())
+            throw new BusinessException(2, 400, "Change password too frequently");
+        String passwordHash = user.getPassword();
+        if (BCryptUtil.checkPassword(userRequest.getPassword(), passwordHash)) {
+            String newPasswordHash = BCryptUtil.hashPassword(userRequest.getNewPassword());
+            userMapper.updatePassword(userRequest.getUsername(), newPasswordHash);
+            userMapper.updateLastUpdate(userRequest.getUsername(), LocalDateTime.now());
+        } else throw new BusinessException(2, 400, "Invalid password");
     }
 
     @LogRecord

@@ -1,6 +1,7 @@
 package com.example.bookmanager.Controller;
 
 import com.example.bookmanager.Annotation.RequireAdmin;
+import com.example.bookmanager.DTO.ChangePassword;
 import com.example.bookmanager.DTO.UserRequest;
 import com.example.bookmanager.Exception.BusinessException;
 import com.example.bookmanager.Service.UserService;
@@ -138,6 +139,21 @@ public class UserController {
             throw e;
         } catch (Exception e) {
             throw new BusinessException(4, 400, "Failed to unban user: " + e.getMessage());
+        }
+    }
+
+    @PatchMapping("/password")
+    public Result changePassword(@RequestBody @Valid ChangePassword userRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
+        try {
+            userService.changePassword(userRequest);
+            return Result.success("Change password successfully");
+        } catch (BusinessException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new BusinessException(4, 400, "Failed to change password: " + e.getMessage());
         }
     }
 }

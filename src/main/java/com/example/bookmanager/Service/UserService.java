@@ -1,5 +1,6 @@
 package com.example.bookmanager.Service;
 
+import com.example.bookmanager.DTO.ChangePassword;
 import com.example.bookmanager.DTO.UserDTO;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface UserService {
     void unbanUser(Long id);
     List<UserDTO> getUserList();
     Map<String, String> login(String username, String password);
+    void changePassword(ChangePassword userRequest);
 }

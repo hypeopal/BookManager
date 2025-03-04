@@ -1,0 +1,78 @@
+openapi: 3.1.0
+info:
+  title: Book Manager API
+  description: There lists all api of the Book Manager system
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8088'
+paths:
+  /api/user/login:
+    get:
+      description: Login to system
+      requestBody:
+        required: true
+        description: login need username and password
+        content:
+          application/json:
+            schema:
+              example:
+                username: string
+                password: string
+      responses:
+        401:
+          description: Failed to parse token
+          content:
+            application/json:
+              schema:
+                example:
+                  code: 2
+                  message: Unauthorized Invalid Token
+        200:
+          description: Login successfully
+          content:
+            application/json:
+              schema:
+
+                example:
+                  code: 0
+                  message: success
+  /api/books:
+    get:
+      description: Get book list
+      parameters:
+        - name: status
+          in: path
+          description: Book status
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: path
+          description: Page number(if specified, count is required, used for pagination)
+          required: false
+          schema:
+            type: integer
+        - name: count
+          in: path
+          description: Page count(if specified, page is required)
+          required: false
+          schema:
+            type: integer
+        - name: category
+          in: path
+          description: Book category(must be one of correct category)
+          required: false
+          schema:
+            type: string
+        - name: library
+          in: path
+          description: Library name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: New response
+          content:
+            application/json:
+              schema:

@@ -59,4 +59,8 @@ public class LibraryConfig {
     public int getBorrowAfterRenew() {
         return Integer.parseInt(getConfigValue("borrowAfterRenew"));
     }
+
+    public int getChangePassDuration() {
+        return Integer.parseInt(getConfigValue("changePassDuration"));
+    }
 }

@@ -202,8 +202,9 @@ public class BookServiceImpl implements BookService {
     public void renewBorrowedBook(Long bookId) {
         Long userId = ThreadLocalUtil.get().getId();
         BorrowRecord record = borrowRecordMapper.getBorrowRecordByBookIdAndUserId(bookId, userId);
-        LocalDateTime now = LocalDateTime.now();
+
         if (record == null) throw new BusinessException(2, 200, "You didn't borrow this book");
+        LocalDateTime now = LocalDateTime.now();
         if (record.getReturnDate().isBefore(now))
             throw new BusinessException(2, 200, "The time to return the book has passed");
         if (record.getRenewTimes() == libraryConfig.getMaxRenewTimes())

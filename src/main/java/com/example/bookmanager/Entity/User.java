@@ -10,6 +10,7 @@ public class User {
     private String username;
     private String password;
     private LocalDateTime createdAt;
+    private LocalDateTime lastUpdate;
     private boolean status;
     private boolean admin;
 }
