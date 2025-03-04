@@ -10,7 +10,6 @@ import com.example.bookmanager.Utils.ResultData;
 import com.example.bookmanager.Utils.ThreadLocalUtil;
 import com.example.bookmanager.Utils.UserClaims;
 import jakarta.validation.Valid;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,10 +24,7 @@ public class UserController {
     * sign up an account
     * */
     @PostMapping("/signup")
-    public Result signup(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        }
+    public Result signup(@Valid @RequestBody UserRequest userRequest) {
         // check if username exists
         if (userService.isUsernameExists(userRequest.getUsername())) {
             throw new BusinessException(2, 400, "Username already exists");
@@ -42,10 +38,7 @@ public class UserController {
     * login
     * */
     @GetMapping("/login")
-    public Result login(@Valid @RequestBody UserRequest userRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        }
+    public Result login(@Valid @RequestBody UserRequest userRequest) {
         try {
             return ResultData.success("Login successfully", userService.login(userRequest.getUsername(), userRequest.getPassword()));
         } catch (Exception e) {
@@ -143,10 +136,7 @@ public class UserController {
     }
 
     @PatchMapping("/password")
-    public Result changePassword(@RequestBody @Valid ChangePassword userRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        }
+    public Result changePassword(@RequestBody @Valid ChangePassword userRequest) {
         try {
             userService.changePassword(userRequest);
             return Result.success("Change password successfully");

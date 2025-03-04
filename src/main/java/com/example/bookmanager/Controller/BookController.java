@@ -13,7 +13,6 @@ import com.example.bookmanager.Utils.ResultData;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -68,10 +67,7 @@ public class BookController {
      * */
     @RequireAdmin
     @PostMapping
-    public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        }
+    public Result addBooks(@Valid @RequestBody AddBookRequest addBookRequest) {
         try {
             bookService.addBooks(addBookRequest);
             return Result.success("Books added successfully");
@@ -104,10 +100,7 @@ public class BookController {
      * */
     @RequireAdmin
     @PostMapping("/info")
-    public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BusinessException(3, 400, bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        }
+    public Result addBookInfo(@Valid @RequestBody BookInfoRequest bookInfoRequest) {
         try {
             bookService.addBookInfo(bookInfoRequest);
             return Result.success("Book info added successfully");
