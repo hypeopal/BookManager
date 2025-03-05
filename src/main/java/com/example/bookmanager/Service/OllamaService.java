@@ -6,9 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,15 +32,20 @@ public class OllamaService {
         this.systemPrompt = systemPrompt;
     }
 
-    public Map<String, Object> chat(ChatRequest request) {
+    private Map<String, Object> genRequestBody (ChatRequest request, boolean stream) {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", request.getModel());
-        requestBody.put("stream", request.isStream());
+        requestBody.put("stream", stream);
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "user", "content", request.getPrompt()));
         messages.add(Map.of("role", "system", "content", systemPrompt));
         requestBody.put("messages", messages);
-        System.out.println(requestBody);
+        return requestBody;
+    }
+
+    public Map<String, Object> generateText(ChatRequest request) {
+        Map<String, Object> requestBody = genRequestBody(request, false);
+
         ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestBody, String.class);
         try {
             return objectMapper.readValue(response.getBody(), new TypeReference<>() {
@@ -45,5 +53,16 @@ public class OllamaService {
         } catch (JsonProcessingException e) {
             throw new BusinessException(4, 500, "Server error");
         }
+    }
+
+    public Flux<String> streamText(ChatRequest request) {
+        Map<String, Object> requestBody = genRequestBody(request, true);
+
+        WebClient webClient = WebClient.create(apiUrl);
+        return webClient.post()
+                .bodyValue(requestBody)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .retrieve()
+                .bodyToFlux(String.class);
     }
 }

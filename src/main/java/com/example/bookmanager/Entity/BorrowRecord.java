@@ -13,4 +13,5 @@ public class BorrowRecord {
     private int renewTimes;
     private boolean returned;
     private Long reserveId;
+    private String borrowStatus;
 }

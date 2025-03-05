@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface BorrowRecordMapper {
-    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name as library, bi.category, br.borrow_date, br.return_date, br.renew_times, br.returned " +
+    @Select("select b.id, b.isbn, bi.title, bi.author, bi.publisher, b.status, l.name as library, bi.category, br.borrow_date, br.return_date, br.renew_times, br.returned, br.borrow_status " +
             "from borrow_records br " +
             "join books b on b.id = br.book_id " +
             "join book_information bi on b.isbn = bi.isbn " +
@@ -38,7 +38,10 @@ public interface BorrowRecordMapper {
     @Update("update borrow_records set renew_times = #{i} where book_id = #{bookId} and user_id = #{userId} and returned = false")
     void setRenewTimes(Long bookId, Long userId, int i);
 
-    @Select("select distinct user_id from borrow_records br join users u on br.user_id = u.id " +
-            "where return_date < now() and returned = false and u.status = true")
-    List<Long> getOverdueUserId();
+    @Select("select * from borrow_records br " +
+            "where return_date < now() and returned = false and borrow_status = 'BORROWED'")
+    List<BorrowRecord> getOverdueRecord();
+
+    @Update("update borrow_records set borrow_status = #{status}::borrow_status where book_id = #{bookId} and user_id = #{userId} and returned = false")
+    void setBorrowStatus(Long bookId, Long userId, String status);
 }

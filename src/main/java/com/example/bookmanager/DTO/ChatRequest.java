@@ -12,5 +12,4 @@ public class ChatRequest {
     @NotNull
     @NotBlank
     private String prompt;
-    private boolean stream;
 }

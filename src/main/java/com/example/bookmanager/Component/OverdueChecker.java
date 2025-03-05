@@ -26,10 +26,11 @@ public class OverdueChecker {
     @Scheduled(cron = "0 0 1 * * ?")
     public void checkOverdue() {
         System.out.println("start check");
-        borrowRecordMapper.getOverdueUserId().forEach(userId -> {
-            System.out.println("User " + userId + " has overdue books");
-            userMapper.banUser(userId);
-            redisService.setUserStatus(userId, false);
+        borrowRecordMapper.getOverdueRecord().forEach(record -> {
+            System.out.println("User " + record.getUserId() + " has overdue books");
+            userMapper.banUser(record.getUserId());
+            borrowRecordMapper.setBorrowStatus(record.getBookId(), record.getUserId(), "OVERDUE");
+            redisService.setUserStatus(record.getUserId(), false);
         });
         reserveRecordMapper.getOverdueRecord().forEach(reserveRecord -> {
             userMapper.banUser(reserveRecord.getUserId());

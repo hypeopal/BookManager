@@ -193,6 +193,7 @@ public class BookServiceImpl implements BookService {
             booksMapper.updateStatusById(bookId, "AVAILABLE");
             borrowRecordMapper.setReturnDate(bookId, userId, LocalDateTime.now());
             borrowRecordMapper.setReturnStatus(bookId, userId, true);
+            borrowRecordMapper.setBorrowStatus(bookId, userId, "RETURNED");
             if (record.getReserveId() != null) {
                 reserveRecordMapper.setStatus(record.getReserveId(), "RETURNED");
             }
