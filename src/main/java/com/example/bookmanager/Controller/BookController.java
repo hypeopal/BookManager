@@ -12,7 +12,6 @@ import com.example.bookmanager.Utils.Result;
 import com.example.bookmanager.Utils.ResultData;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -104,13 +103,9 @@ public class BookController {
         try {
             bookService.addBookInfo(bookInfoRequest);
             return Result.success("Book info added successfully");
-        } catch (DuplicateKeyException e) {
-            throw new BusinessException(2, 400, "Book info already exists");
         } catch (BusinessException e) {
             throw e;
-        } catch (IllegalArgumentException e) {
-            throw new BusinessException(2, 400, "Book category not exists");
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new BusinessException(4, 400, "Failed to add book info: " + e.getMessage());
         }
     }

@@ -143,6 +143,9 @@ public class BookServiceImpl implements BookService {
     @LogRecord
     @Override
     public void addBookInfo(BookInfoRequest bookInfoRequest) {
+        if (bookInformationMapper.existsByIsbn(bookInfoRequest.getIsbn()) != 0) {
+            throw new BusinessException(2, 400, "Book info already exists");
+        }
         bookInformationMapper.insertBookInformation(new BookInformation(bookInfoRequest.getIsbn(), bookInfoRequest.getTitle(), bookInfoRequest.getAuthor(), bookInfoRequest.getPublisher(), BookCategory.valueOf(bookInfoRequest.getCategory())));
     }
 

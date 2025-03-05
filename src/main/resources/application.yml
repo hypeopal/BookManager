@@ -16,3 +16,8 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+ollama:
+  api:
+    url: http://localhost:11434/api/chat
+  system-prompt: 你是一个能够理解中文指令并帮助完成任务的智能助手。你的任务是根据用户的需求生成合适的分类任务或生成任务，并准确判断这些任务的类型。请确保你的回答简洁、准确且符合中英文语境。
