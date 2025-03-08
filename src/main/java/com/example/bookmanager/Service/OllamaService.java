@@ -48,8 +48,7 @@ public class OllamaService {
 
         ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestBody, String.class);
         try {
-            return objectMapper.readValue(response.getBody(), new TypeReference<>() {
-            });
+            return objectMapper.readValue(response.getBody(), new TypeReference<>(){});
         } catch (JsonProcessingException e) {
             throw new BusinessException(4, 500, "Server error");
         }

@@ -6,6 +6,7 @@ import com.example.bookmanager.Service.OllamaService;
 import com.example.bookmanager.Utils.Result;
 import com.example.bookmanager.Utils.ResultData;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class OllamaController {
         }
     }
 
-    @PostMapping("/stream")
+    @PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamChat(@RequestBody @Valid ChatRequest chatRequest) {
         return ollamaService.streamText(chatRequest);
     }

@@ -5,6 +5,8 @@ import com.example.bookmanager.Utils.ResultData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,5 +33,15 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(ResultData.error(3, "Validation failed", errors), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Result> handleHttpMessageNotReadableException() {
+        return new ResponseEntity<>(Result.error(3, "Invalid request body"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Result> handleHttpMediaTypeNotSupportedException() {
+        return new ResponseEntity<>(Result.error(3, "Unsupported media type"), HttpStatus.BAD_REQUEST);
     }
 }

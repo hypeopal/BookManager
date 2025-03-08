@@ -37,7 +37,7 @@ public class UserController {
     /*
     * login
     * */
-    @GetMapping("/login")
+    @PostMapping("/login")
     public Result login(@Valid @RequestBody UserRequest userRequest) {
         try {
             return ResultData.success("Login successfully", userService.login(userRequest.getUsername(), userRequest.getPassword()));
